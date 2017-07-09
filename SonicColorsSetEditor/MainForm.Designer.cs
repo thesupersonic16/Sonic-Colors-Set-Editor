@@ -40,6 +40,7 @@
             this.ToolStripMenuItem_BuildCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_SaveAndBuildCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_ExtractCPK = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_SaveAndLaunchSC = new System.Windows.Forms.ToolStripMenuItem();
             this.ListView_Objects = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -82,7 +83,6 @@
             this.Button_RemoveObject = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ToolStripMenuItem_SaveAndLaunchSC = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_ObjectID)).BeginInit();
@@ -209,6 +209,14 @@
             this.ToolStripMenuItem_ExtractCPK.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItem_ExtractCPK.Text = "Extract CPK";
             this.ToolStripMenuItem_ExtractCPK.Click += new System.EventHandler(this.ToolStripMenuItem_ExtractCPK_Click);
+            // 
+            // ToolStripMenuItem_SaveAndLaunchSC
+            // 
+            this.ToolStripMenuItem_SaveAndLaunchSC.Enabled = false;
+            this.ToolStripMenuItem_SaveAndLaunchSC.Name = "ToolStripMenuItem_SaveAndLaunchSC";
+            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_SaveAndLaunchSC.Text = "Save and Launch SC";
+            this.ToolStripMenuItem_SaveAndLaunchSC.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndLaunchSC_Click);
             // 
             // ListView_Objects
             // 
@@ -725,14 +733,6 @@
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(0, 17);
             // 
-            // ToolStripMenuItem_SaveAndLaunchSC
-            // 
-            this.ToolStripMenuItem_SaveAndLaunchSC.Enabled = false;
-            this.ToolStripMenuItem_SaveAndLaunchSC.Name = "ToolStripMenuItem_SaveAndLaunchSC";
-            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(180, 22);
-            this.ToolStripMenuItem_SaveAndLaunchSC.Text = "Save and Launch SC";
-            this.ToolStripMenuItem_SaveAndLaunchSC.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndLaunchSC_Click);
-            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -791,7 +791,6 @@
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ListView ListView_Objects;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.GroupBox GroupBox_Transform;
@@ -839,6 +838,7 @@
         private System.Windows.Forms.NumericUpDown NumericUpDown_ObjectID;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_ExtractCPK;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_SaveAndLaunchSC;
+        public System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

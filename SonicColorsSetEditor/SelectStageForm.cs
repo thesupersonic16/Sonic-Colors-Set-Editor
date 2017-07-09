@@ -33,6 +33,7 @@ namespace SonicColorsSetEditor
                 lvi.Tag = Path.GetFileNameWithoutExtension(fileName);
                 listView1.Items.Add(lvi);
             }
+            Console.WriteLine("Found {0} Files in {1}.", listView1.Items.Count, filePath);
         }
 
         private void Button_Load_Click(object sender, EventArgs e)

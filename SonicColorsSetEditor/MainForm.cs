@@ -26,6 +26,7 @@ namespace SonicColorsSetEditor
         public static string GameName = "Sonic Colors";
         public static bool HasCPKMaker = false;
         public static bool UseOtherEnglish = false; // lol
+        public static bool HasBeenInit = false;
         
         public Dictionary<string, SetObjectType> TemplatesColors = null;
         public SetData SetData = null;
@@ -46,7 +47,11 @@ namespace SonicColorsSetEditor
             }
 
             InitializeComponent();
+        }
 
+        public void Init()
+        {
+            HasBeenInit = true;
             Config.LoadConfig("config.bin");
 
             UpdateObjects();
@@ -77,8 +82,6 @@ namespace SonicColorsSetEditor
             }
             else
             {
-                Console.WriteLine("WARNING: Could not find \"CpkMaker.dll\". " +
-                    "This is required to create and extract cpks.");
                 Message("WARNING: Could not find \"CpkMaker.dll\". " +
                     "This is required to create and extract cpks.");
             }
@@ -87,6 +90,7 @@ namespace SonicColorsSetEditor
         public void Message(string s)
         {
             toolStripStatusLabel1.Text = s;
+            Console.WriteLine(s);
         }
 
         public void UpdateObjects()
@@ -215,11 +219,9 @@ namespace SonicColorsSetEditor
                 NumericUpDown_ObjectID.Value = setObject.ObjectID;
 
                 // Clear the Custom Data list
-
                 ListView_CustomData.Items.Clear();
 
                 // Fill Custom Data list
-
                 foreach (var parameter in setObject.CustomData)
                 {
                     var lvi = new ListViewItem(parameter.Key);
@@ -239,17 +241,25 @@ namespace SonicColorsSetEditor
             }
         }
 
-        public void OpenSetData(string FilePath)
+        public void OpenSetData(string filePath)
         {
-            LoadedFilePath = FilePath;
+            if (!HasBeenInit)
+                Init();
+            Console.WriteLine("Opening SetData File: {0}", filePath);
+            LoadedFilePath = filePath;
             SetData = new ColorsSetData();
 
-            if (FilePath.ToLower().EndsWith(".orc"))
+            if (filePath.ToLower().EndsWith(".orc"))
             {
-                SetData.Load(FilePath, TemplatesColors);
-            }else if (FilePath.ToLower().EndsWith(".xml"))
+                SetData.Load(filePath, TemplatesColors);
+            }else if (filePath.ToLower().EndsWith(".xml"))
             {
-                SetData.ImportXML(FilePath);
+                SetData.ImportXML(filePath);
+            }
+            else if (File.GetAttributes(filePath).HasFlag(FileAttributes.Directory))
+            {
+                CPKDirectory = Path.GetDirectoryName(filePath);
+                new SelectStageForm(this, Path.GetDirectoryName(filePath)).ShowDialog();
             }
             UpdateObjects();
             saveToolStripMenuItem.Enabled = true;
@@ -270,6 +280,7 @@ namespace SonicColorsSetEditor
                     LoadedFilePath = sfd.FileName;
                 }
             }
+            Console.WriteLine("Saving SetData File: {0}", LoadedFilePath);
             if (LoadedFilePath.ToLower().EndsWith(".orc"))
             {
                 SetData.Save(LoadedFilePath, true);
@@ -428,8 +439,14 @@ namespace SonicColorsSetEditor
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
             SaveSetData();
+            var cpkMaker = new CPKMaker();
+            Console.Write("Building CPK... ");
+            cpkMaker.BuildCPK(CPKDirectory);
+            Console.WriteLine("Done.");
+
             if (Config.DolphinExecutablePath.Length == 0)
             {
+                Message("Dolphin is not set up yet");
                 MessageBox.Show("Please locate your Dolphin executable.", ProgramName);
                 var ofd = new OpenFileDialog()
                 {
@@ -449,11 +466,19 @@ namespace SonicColorsSetEditor
                 string dolFilePath = Helpers.CombinePaths(dvdRootPath, "boot.dol");
                 string apploaderPath = Helpers.CombinePaths(dvdRootPath, "apploader.img");
 
+                if (!File.Exists(dolFilePath))
+                {
+                    MessageBox.Show("Could not find boot.dol\n" +
+                    "Make sure boot.dol is in the parent directory of \"sonic2010_0\"");
+                    return;
+                }
+
                 // Dolphin Config
                 string dolphinConfigPath = Helpers.CombinePaths(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "Dolphin Emulator", "Config", "Dolphin.ini");
                 string[] dolphinConfig = File.ReadAllLines(dolphinConfigPath);
+
                 for (int i = 0; i < dolphinConfig.Length; ++i)
                 {
                     if (dolphinConfig[i].StartsWith("DVDRoot"))
@@ -461,15 +486,11 @@ namespace SonicColorsSetEditor
                     if (dolphinConfig[i].StartsWith("Apploader"))
                         dolphinConfig[i] = $"Apploader = {apploaderPath}";
                 }
+                Console.WriteLine("Saving Dolphin Config");
                 File.WriteAllLines(dolphinConfigPath, dolphinConfig);
 
-                if (!File.Exists(dolFilePath))
-                {
-                    MessageBox.Show("Could not find boot.dol\n" +
-                    "Make sure boot.dol is in the directory as \"sonic2010_0\"");
-                    return;
-                }
                 var process = Process.Start(Config.DolphinExecutablePath, $"/b -e \"{dolFilePath}\"");
+                Console.WriteLine("Starting Dolphin... [{0}]", process.StartInfo.Arguments);
                 while (!process.HasExited)
                 {
                     Enabled = false;
@@ -481,14 +502,16 @@ namespace SonicColorsSetEditor
                     IntPtr labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
                     var sb = new StringBuilder(GetWindowTextLength(labelHandle));
                     GetWindowText(labelHandle, sb, sb.Capacity);
-                    Console.WriteLine(sb);
                     if (sb.ToString().Contains("Unknown instruction"))
                     {
                         process.Kill();
+                        Console.WriteLine("The Guest has stopped working!");
+                        Console.WriteLine("Returned: {0}", sb);
                         MessageBox.Show("The Guest has stopped working.\n" + sb, ProgramName,
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
+                Console.WriteLine("Process is nolonger running");
                 Enabled = true;
             }
             catch (FileNotFoundException)
@@ -538,7 +561,6 @@ namespace SonicColorsSetEditor
                 UpdateTransform(SelectedSetObject, (int)NumericUpDown_TransIndex.Value);
                 // Disable The remove button if 0 is selected;
                 Button_RemoveTransform.Enabled = NumericUpDown_TransIndex.Value != 0;
-
             }
         }
 
@@ -611,7 +633,6 @@ namespace SonicColorsSetEditor
 
                 new EditParamForm(param).ShowDialog();
                 lvi.SubItems[1].Text = param.Data.ToString();
-
             }
         }
         
