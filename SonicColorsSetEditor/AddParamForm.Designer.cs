@@ -99,7 +99,7 @@
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Label_Title);
             this.Name = "AddParamForm";
-            this.Text = "AddParamForm";
+            this.Text = "Add Parameter";
             this.ResumeLayout(false);
             this.PerformLayout();
 

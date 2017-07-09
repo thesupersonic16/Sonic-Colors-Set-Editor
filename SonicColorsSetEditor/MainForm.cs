@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -22,9 +23,10 @@ namespace SonicColorsSetEditor
 
         public static string SonicColorsShortName = "Colors";
         public static string ProgramName = "Sonic Colors Set Editor";
+        public static string GameName = "Sonic Colors";
         public static bool HasCPKMaker = false;
-
-
+        public static bool UseOtherEnglish = false; // lol
+        
         public Dictionary<string, SetObjectType> TemplatesColors = null;
         public SetData SetData = null;
         public SetObject SelectedSetObject = null;
@@ -33,6 +35,16 @@ namespace SonicColorsSetEditor
 
         public MainForm()
         {
+
+            // Change English. lol
+            var list = new string[] { "AU", "UK" }.ToList();
+            if (list.Contains(RegionInfo.CurrentRegion.TwoLetterISORegionName))
+            {
+                ProgramName = "Sonic Colours Set Editor";
+                GameName = "Sonic Colours";
+                UseOtherEnglish = true;
+            }
+
             InitializeComponent();
 
             Config.LoadConfig("config.bin");
@@ -251,7 +263,7 @@ namespace SonicColorsSetEditor
                 var sfd = new SaveFileDialog()
                 {
                     Title = "Save SetData",
-                    Filter = "Sonic Colo(u)rs|*.orc|XML|*.xml"
+                    Filter = GameName + "|*.orc|XML|*.xml"
                 };
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -336,7 +348,7 @@ namespace SonicColorsSetEditor
             var ofd = new OpenFileDialog()
             {
                 Title = "Open SetData",
-                Filter = "Sonic Colo(u)rs|*.orc|XML|*.xml"
+                Filter = GameName + "|*.orc|XML|*.xml"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
