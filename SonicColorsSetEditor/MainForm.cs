@@ -27,7 +27,8 @@ namespace SonicColorsSetEditor
         public static bool HasCPKMaker = false;
         public static bool UseOtherEnglish = false; // lol
         public static bool HasBeenInit = false;
-        
+        public static bool saveAsNow = true; //Handles whether to open the save dialogue box and also to cancel the save if necessary.
+
         public Dictionary<string, SetObjectType> TemplatesColors = null;
         public SetData SetData = null;
         public SetObject SelectedSetObject = null;
@@ -263,12 +264,13 @@ namespace SonicColorsSetEditor
             }
             UpdateObjects();
             saveToolStripMenuItem.Enabled = true;
+            saveAsToolStripMenuItem.Enabled = true;
             Message($"Loaded {SetData.Objects.Count} Objects.");
         }
 
         public void SaveSetData()
         {
-            if (LoadedFilePath == null)
+            if (LoadedFilePath == null || saveAsNow == true)
             {
                 var sfd = new SaveFileDialog()
                 {
@@ -278,17 +280,23 @@ namespace SonicColorsSetEditor
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     LoadedFilePath = sfd.FileName;
+                    saveAsNow = false;
                 }
             }
-            Console.WriteLine("Saving SetData File: {0}", LoadedFilePath);
-            if (LoadedFilePath.ToLower().EndsWith(".orc"))
+            if (LoadedFilePath != null && saveAsNow == false)
             {
-                SetData.Save(LoadedFilePath, true);
+                Console.WriteLine("Saving SetData File: {0}", LoadedFilePath);
+                if (LoadedFilePath.ToLower().EndsWith(".orc"))
+                {
+                    SetData.Save(LoadedFilePath, true);
+                }
+                else if (LoadedFilePath.ToLower().EndsWith(".xml"))
+                {
+                    SetData.ExportXML(LoadedFilePath);
+                }
+                saveToolStripMenuItem.Enabled = true;
             }
-            else if (LoadedFilePath.ToLower().EndsWith(".xml"))
-            {
-                SetData.ExportXML(LoadedFilePath);
-            }
+
         }
 
         public static void WriteDefaultCustomData(SetObject setObject)
@@ -351,6 +359,8 @@ namespace SonicColorsSetEditor
         {
             SetData = new ColorsSetData();
             LoadedFilePath = null;
+            saveToolStripMenuItem.Enabled = false;
+            saveAsToolStripMenuItem.Enabled = true;
             UpdateObjects();
         }
 
@@ -370,6 +380,13 @@ namespace SonicColorsSetEditor
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            saveAsNow = false;
+            SaveSetData();
+        }
+
+        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveAsNow = true;
             SaveSetData();
         }
 
@@ -711,6 +728,6 @@ namespace SonicColorsSetEditor
 
         [DllImport("user32.dll")]
         private static extern int GetWindowTextLength(IntPtr Handle);
-        
+
     }
 }
