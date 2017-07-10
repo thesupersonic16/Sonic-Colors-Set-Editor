@@ -35,6 +35,7 @@
             this.ToolStripMenuItem_OpenFile = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_OpenExtractedCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_BuildCPK = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,6 +131,7 @@
             this.ToolStripMenuItem_OpenFile,
             this.ToolStripMenuItem_OpenExtractedCPK,
             this.saveToolStripMenuItem,
+            this.saveAsToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
@@ -167,6 +169,14 @@
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(254, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
+            // 
+            // saveAsToolStripMenuItem
+            // 
+            this.saveAsToolStripMenuItem.Enabled = false;
+            this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.saveAsToolStripMenuItem.Text = "Save As";
+            this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.SaveAsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -789,6 +799,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_OpenExtractedCPK;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveAsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ListView ListView_Objects;
         private System.Windows.Forms.ColumnHeader columnHeader1;
