@@ -90,7 +90,7 @@ namespace SonicColorsSetEditor
 
         public void Message(string s)
         {
-            toolStripStatusLabel1.Text = s;
+            ToolStrip_Label.Text = s;
             Console.WriteLine(s);
         }
 
@@ -99,7 +99,6 @@ namespace SonicColorsSetEditor
             Text = ProgramName;
             if (SetData != null)
             {
-
                 if (CPKDirectory.Length != 0 && HasCPKMaker)
                 {
                     ToolStripMenuItem_BuildCPK.Enabled = true;
@@ -270,12 +269,12 @@ namespace SonicColorsSetEditor
 
         public void SaveSetData()
         {
-            if (LoadedFilePath == null || saveAsNow == true)
+            if (string.IsNullOrEmpty(LoadedFilePath) || saveAsNow)
             {
                 var sfd = new SaveFileDialog()
                 {
                     Title = "Save SetData",
-                    Filter = GameName + "|*.orc|XML|*.xml"
+                    Filter = $"{GameName} SetData|*.orc|XML|*.xml"
                 };
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -283,7 +282,7 @@ namespace SonicColorsSetEditor
                     saveAsNow = false;
                 }
             }
-            if (LoadedFilePath != null && saveAsNow == false)
+            if (!string.IsNullOrEmpty(LoadedFilePath) && !saveAsNow)
             {
                 Console.WriteLine("Saving SetData File: {0}", LoadedFilePath);
                 if (LoadedFilePath.ToLower().EndsWith(".orc"))
@@ -295,8 +294,24 @@ namespace SonicColorsSetEditor
                     SetData.ExportXML(LoadedFilePath);
                 }
                 saveToolStripMenuItem.Enabled = true;
+                Message("Saved.");
             }
 
+        }
+
+        public void SelectSetObject(SetObject setObject)
+        {
+            SelectedSetObject = setObject;
+            if (SelectedSetObject != null)
+            {
+                UpdateSetObject(SelectedSetObject);
+                groupBox1.Enabled = true;
+            }
+            else
+            {
+                groupBox1.Text = "Object: (No Object Selected)";
+                groupBox1.Enabled = false;
+            }
         }
 
         public static void WriteDefaultCustomData(SetObject setObject)
@@ -351,11 +366,10 @@ namespace SonicColorsSetEditor
             Console.WriteLine($"Loaded {objectTemplates.Count} Templates.\n");
             return objectTemplates;
         }
-
-        
         
         #region ToolStripMenuItem
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetData = new ColorsSetData();
             LoadedFilePath = null;
@@ -369,7 +383,7 @@ namespace SonicColorsSetEditor
             var ofd = new OpenFileDialog()
             {
                 Title = "Open SetData",
-                Filter = GameName + "|*.orc|XML|*.xml"
+                Filter = $"{GameName} SetData|*.orc|XML|*.xml"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
             {
@@ -610,17 +624,7 @@ namespace SonicColorsSetEditor
 
         private void ListView_Objects_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            SelectedSetObject = e.Item.Tag as SetObject;
-            if (e.IsSelected && SelectedSetObject != null)
-            {
-                UpdateSetObject(SelectedSetObject);
-                groupBox1.Enabled = true;
-            }
-            else
-            {
-                groupBox1.Text = "Object: (No Object Selected)";
-                groupBox1.Enabled = false;
-            }
+            SelectSetObject(e.IsSelected ? e.Item.Tag as SetObject : null);
         }
 
         private void Button_AddObject_Click(object sender, EventArgs e)
@@ -635,6 +639,7 @@ namespace SonicColorsSetEditor
             if (SelectedSetObject != null)
             {
                 SetData.Objects.Remove(SelectedSetObject);
+                SelectSetObject(null);
                 UpdateObjects();
             }
         }

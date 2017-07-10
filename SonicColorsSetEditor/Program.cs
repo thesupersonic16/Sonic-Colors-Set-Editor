@@ -18,46 +18,45 @@ namespace SonicColorsSetEditor
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             var form = new MainForm();
+            // e.g. SonicColorsSetEditor /c /o stg110_obj_00.orc /so 30
             if (args.Length > 0)
             {
                 int argIndex = 0;
                 while (argIndex < args.Length)
-                switch (args[argIndex++].ToLower())
-                {
-                    case "/?":
-                        ShowHelp();
-                        break;
-                    case "/c":
-                        CreateConsole();
-                        break;
-                    case "/o":
-                        if (args.Length > argIndex)
-                            form.OpenSetData(args[argIndex++]);
-                        break;
-                    case "/so":
-                        if (form.SetData == null)
-                        {
-                            MessageBox.Show("You can not select a SetObject without an opened SetData");
-                            return;
-                        }
-                        if (args.Length > argIndex)
-                        {
-                            try
+                    switch (args[argIndex++].ToLower())
+                    {
+                        case "/?":
+                            ShowHelp();
+                            break;
+                        case "/c":
+                            CreateConsole();
+                            break;
+                        case "/o":
+                            if (args.Length > argIndex)
+                                form.OpenSetData(args[argIndex++]);
+                            break;
+                        case "/so":
+                            if (form.SetData == null)
                             {
-                                int id = int.Parse(args[argIndex++]);
-                                form.SelectedSetObject = form.SetData.Objects.Find(t => t.ObjectID == id);
-                                form.UpdateSetObject(form.SelectedSetObject);
-                                form.groupBox1.Enabled = form.SelectedSetObject != null;
-                            }
-                            catch
-                            {
+                                MessageBox.Show("You can not select a SetObject without an opened SetData");
                                 return;
                             }
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                            if (args.Length > argIndex)
+                            {
+                                try
+                                {
+                                    int id = int.Parse(args[argIndex++]);
+                                    form.SelectSetObject(form.SetData.Objects.Find(t => t.ObjectID == id));
+                                }
+                                catch
+                                {
+                                    return;
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
             }
             Console.WriteLine("Done With Arguments!");
             if (!MainForm.HasBeenInit)
