@@ -125,4 +125,7 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>IF EXIST "$(SolutionDir)HedgeLib\HedgeEdit\Templates" (IF NOT EXIST "$(TargetDir)Templates" (mkdir "$(TargetDir)Templates" &amp; xcopy /E "$(SolutionDir)HedgeLib\HedgeEdit\Templates" "$(TargetDir)Templates"))</PostBuildEvent>
+  </PropertyGroup>
 </Project>

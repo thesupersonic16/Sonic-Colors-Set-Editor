@@ -28,7 +28,7 @@ namespace SonicColorsSetEditor
                         ShowHelp();
                         break;
                     case "/c":
-                            CreateConsole();
+                        CreateConsole();
                         break;
                     case "/o":
                         if (args.Length > argIndex)
