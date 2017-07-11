@@ -291,7 +291,7 @@ namespace SonicColorsSetEditor
                 }
                 else if (LoadedFilePath.ToLower().EndsWith(".xml"))
                 {
-                    SetData.ExportXML(LoadedFilePath);
+                    SetData.ExportXML(LoadedFilePath, TemplatesColors);
                 }
                 saveToolStripMenuItem.Enabled = true;
                 Message("Saved.");
