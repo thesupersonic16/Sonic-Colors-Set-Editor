@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace SonicColorsSetEditor
 {
@@ -254,6 +255,7 @@ namespace SonicColorsSetEditor
                 SetData.Load(filePath, TemplatesColors);
             }else if (filePath.ToLower().EndsWith(".xml"))
             {
+                CreateObjectTemplateFromXMLSetData(filePath, true);
                 SetData.ImportXML(filePath);
             }
             else if (File.GetAttributes(filePath).HasFlag(FileAttributes.Directory))
@@ -311,6 +313,49 @@ namespace SonicColorsSetEditor
             {
                 groupBox1.Text = "Object: (No Object Selected)";
                 groupBox1.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Creates temporary templates from a XML file that contains setdata
+        /// </summary>
+        /// <param name="filePath">Path to the XML</param>
+        /// <param name="save"></param>
+        public void CreateObjectTemplateFromXMLSetData(string filePath, bool save = false)
+        {
+            var xml = XDocument.Load(filePath);
+            foreach (var objElem in xml.Root.Elements("Object"))
+            {
+                var typeAttr = objElem.Attribute("type");
+                var parametersElem = objElem.Element("Parameters");
+                if (typeAttr == null) continue;
+                if (TemplatesColors.ContainsKey(typeAttr.Value))
+                    continue;
+                var objType = new SetObjectType();
+                objType.Name = typeAttr.Value;
+                
+                if (parametersElem != null)
+                {
+                    foreach (var paramElem in parametersElem.Elements())
+                    {
+                        var param = new SetObjectTypeParam();
+                        var dataTypeAttr = paramElem.Attribute("type");
+                        if (dataTypeAttr == null) continue;
+
+                        var dataType = Types.GetTypeFromString(dataTypeAttr.Value);
+
+                        param.Name = paramElem.Name.ToString();
+                        param.DataType = dataType;
+                        param.DefaultValue = paramElem.Value;
+                        param.Description = "TODO";
+
+                        objType.Parameters.Add(param);
+                    }
+                }
+                TemplatesColors.Add(typeAttr.Value, objType);
+
+                if (save)
+                    objType.Save(typeAttr.Value + ".xml", true);
             }
         }
 
