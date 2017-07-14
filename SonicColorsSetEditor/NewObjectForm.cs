@@ -34,6 +34,11 @@ namespace SonicColorsSetEditor
             {
                 if (DialogResult.HasFlag(DialogResult.OK))
                 {
+
+                    // Creates a new SetObjectType
+                    if (!Form.TemplatesColors.ContainsKey(comboBox1.Text))
+                        Form.TemplatesColors.Add(comboBox1.Text, new SetObjectType());
+
                     var setObject = new SetObject(
                         Form.TemplatesColors[comboBox1.Text], comboBox1.Text, GenerateID(Form.SetData));
                     MainForm.WriteDefaultCustomData(setObject);

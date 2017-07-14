@@ -263,6 +263,10 @@ namespace SonicColorsSetEditor
                 CPKDirectory = Path.GetDirectoryName(filePath);
                 new SelectStageForm(this, Path.GetDirectoryName(filePath)).ShowDialog();
             }
+
+            if (!string.IsNullOrEmpty(LoadedFilePath))
+                ReloadSetData_ToolStripMenuItem.Enabled = true;
+
             UpdateObjects();
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
@@ -411,8 +415,24 @@ namespace SonicColorsSetEditor
             Console.WriteLine($"Loaded {objectTemplates.Count} Templates.\n");
             return objectTemplates;
         }
-        
+
         #region ToolStripMenuItem
+
+        private void ReloadSetData_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("Reloading SetData...");
+            if (!string.IsNullOrEmpty(LoadedFilePath))
+                OpenSetData(LoadedFilePath);
+        }
+
+        private void ReloadTemplates_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Loads the templates
+            ComboBox_ObjectType.Items.Clear();
+            TemplatesColors = LoadObjectTemplates(SonicColorsShortName);
+            foreach (string objName in TemplatesColors.Keys)
+                ComboBox_ObjectType.Items.Add(objName);
+        }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -472,7 +492,9 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndBuildCPK_Click(object sender, EventArgs e)
         {
+            saveAsNow = false;
             SaveSetData();
+            Console.WriteLine("Building CPK...");
             var cpkMaker = new CPKMaker();
             cpkMaker.BuildCPK(CPKDirectory);
             MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -514,7 +536,9 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
+            saveAsNow = false;
             SaveSetData();
+            Console.WriteLine("Saved.");
             var cpkMaker = new CPKMaker();
             Console.Write("Building CPK... ");
             cpkMaker.BuildCPK(CPKDirectory);

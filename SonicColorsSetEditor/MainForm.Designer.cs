@@ -42,6 +42,7 @@
             this.ToolStripMenuItem_SaveAndBuildCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_ExtractCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_SaveAndLaunchSC = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReloadTemplates_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListView_Objects = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -84,6 +85,7 @@
             this.Button_RemoveObject = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStrip_Label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ReloadSetData_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_ObjectID)).BeginInit();
@@ -193,7 +195,9 @@
             this.ToolStripMenuItem_BuildCPK,
             this.ToolStripMenuItem_SaveAndBuildCPK,
             this.ToolStripMenuItem_ExtractCPK,
-            this.ToolStripMenuItem_SaveAndLaunchSC});
+            this.ToolStripMenuItem_SaveAndLaunchSC,
+            this.ReloadTemplates_ToolStripMenuItem,
+            this.ReloadSetData_ToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "Tools";
@@ -202,7 +206,7 @@
             // 
             this.ToolStripMenuItem_BuildCPK.Enabled = false;
             this.ToolStripMenuItem_BuildCPK.Name = "ToolStripMenuItem_BuildCPK";
-            this.ToolStripMenuItem_BuildCPK.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_BuildCPK.Size = new System.Drawing.Size(240, 22);
             this.ToolStripMenuItem_BuildCPK.Text = "Build CPK";
             this.ToolStripMenuItem_BuildCPK.Click += new System.EventHandler(this.ToolStripMenuItem_BuildCPK_Click);
             // 
@@ -210,7 +214,7 @@
             // 
             this.ToolStripMenuItem_SaveAndBuildCPK.Enabled = false;
             this.ToolStripMenuItem_SaveAndBuildCPK.Name = "ToolStripMenuItem_SaveAndBuildCPK";
-            this.ToolStripMenuItem_SaveAndBuildCPK.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_SaveAndBuildCPK.Size = new System.Drawing.Size(240, 22);
             this.ToolStripMenuItem_SaveAndBuildCPK.Text = "Save And Build CPK";
             this.ToolStripMenuItem_SaveAndBuildCPK.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndBuildCPK_Click);
             // 
@@ -218,7 +222,7 @@
             // 
             this.ToolStripMenuItem_ExtractCPK.Enabled = false;
             this.ToolStripMenuItem_ExtractCPK.Name = "ToolStripMenuItem_ExtractCPK";
-            this.ToolStripMenuItem_ExtractCPK.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_ExtractCPK.Size = new System.Drawing.Size(240, 22);
             this.ToolStripMenuItem_ExtractCPK.Text = "Extract CPK";
             this.ToolStripMenuItem_ExtractCPK.Click += new System.EventHandler(this.ToolStripMenuItem_ExtractCPK_Click);
             // 
@@ -226,9 +230,18 @@
             // 
             this.ToolStripMenuItem_SaveAndLaunchSC.Enabled = false;
             this.ToolStripMenuItem_SaveAndLaunchSC.Name = "ToolStripMenuItem_SaveAndLaunchSC";
-            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(240, 22);
             this.ToolStripMenuItem_SaveAndLaunchSC.Text = "Save and Launch SC";
             this.ToolStripMenuItem_SaveAndLaunchSC.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndLaunchSC_Click);
+            // 
+            // ReloadTemplates_ToolStripMenuItem
+            // 
+            this.ReloadTemplates_ToolStripMenuItem.Name = "ReloadTemplates_ToolStripMenuItem";
+            this.ReloadTemplates_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.R)));
+            this.ReloadTemplates_ToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.ReloadTemplates_ToolStripMenuItem.Text = "Reload Templates";
+            this.ReloadTemplates_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadTemplates_ToolStripMenuItem_Click);
             // 
             // ListView_Objects
             // 
@@ -746,6 +759,15 @@
             this.ToolStrip_Label.Name = "ToolStrip_Label";
             this.ToolStrip_Label.Size = new System.Drawing.Size(0, 17);
             // 
+            // ReloadSetData_ToolStripMenuItem
+            // 
+            this.ReloadSetData_ToolStripMenuItem.Enabled = false;
+            this.ReloadSetData_ToolStripMenuItem.Name = "ReloadSetData_ToolStripMenuItem";
+            this.ReloadSetData_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.ReloadSetData_ToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.ReloadSetData_ToolStripMenuItem.Text = "Reload SetData";
+            this.ReloadSetData_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadSetData_ToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -853,6 +875,8 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_ExtractCPK;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_SaveAndLaunchSC;
         public System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ToolStripMenuItem ReloadTemplates_ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ReloadSetData_ToolStripMenuItem;
     }
 }
 
