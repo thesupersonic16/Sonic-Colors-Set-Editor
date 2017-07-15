@@ -28,8 +28,7 @@ namespace SonicColorsSetEditor
         public static bool HasCPKMaker = false;
         public static bool UseOtherEnglish = false; // lol
         public static bool HasBeenInit = false;
-        public static bool saveAsNow = true; //Handles whether to open the save dialogue box and also to cancel the save if necessary.
-
+        
         public Dictionary<string, SetObjectType> TemplatesColors = null;
         public SetData SetData = null;
         public SetObject SelectedSetObject = null;
@@ -38,7 +37,6 @@ namespace SonicColorsSetEditor
 
         public MainForm()
         {
-
             // Change English. lol
             var list = new string[] { "AU", "UK" }.ToList();
             if (list.Contains(RegionInfo.CurrentRegion.TwoLetterISORegionName))
@@ -51,6 +49,9 @@ namespace SonicColorsSetEditor
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Initialises Sonic Colors Set Editor
+        /// </summary>
         public void Init()
         {
             HasBeenInit = true;
@@ -71,7 +72,7 @@ namespace SonicColorsSetEditor
             }
             else
             {
-                // Loads the templates
+                // Loads the object templates
                 TemplatesColors = LoadObjectTemplates(SonicColorsShortName);
                 foreach (string objName in TemplatesColors.Keys)
                     ComboBox_ObjectType.Items.Add(objName);
@@ -95,6 +96,9 @@ namespace SonicColorsSetEditor
             Console.WriteLine(s);
         }
 
+        /// <summary>
+        /// Updates the Object List
+        /// </summary>
         public void UpdateObjects()
         {
             Text = ProgramName;
@@ -150,6 +154,12 @@ namespace SonicColorsSetEditor
             }
         }
 
+
+        /// <summary>
+        /// Updates the GUI to show the selected transform from the passed SetObject
+        /// </summary>
+        /// <param name="setObject"></param>
+        /// <param name="index"></param>
         public void UpdateTransform(SetObject setObject, int index)
         {
             var objectPos = setObject.Transform.Position;
@@ -172,6 +182,10 @@ namespace SonicColorsSetEditor
 
         }
 
+        /// <summary>
+        /// Updates the GUI to show all the parameters from the passed SetObject
+        /// </summary>
+        /// <param name="setObject"></param>
         public void UpdateParameters(SetObject setObject)
         {
             // Clear the Parameter list
@@ -181,14 +195,18 @@ namespace SonicColorsSetEditor
             foreach (var parameter in setObject.Parameters)
             {
                 var lvi = new ListViewItem(parameter.Data as string);
+
+                var setObjectType = TemplatesColors[setObject.ObjectType];
+                var setObjectParams = setObjectType.Parameters;
                 string parameterName = parameter.DataType.ToString();
-                int index = setObject.Parameters.IndexOf(parameter);
-                var templateParams = TemplatesColors[setObject.ObjectType].Parameters;
-                if (index < templateParams.Count)
+                int parameterIndex = setObject.Parameters.IndexOf(parameter);
+
+                if (parameterIndex < setObjectParams.Count && parameterIndex != -1)
                 {
-                    var objectType = templateParams.ElementAt(index);
-                    parameterName = objectType.Name;
-                    if (parameter.DataType != objectType.DataType)
+                    var parameterType = setObjectParams.ElementAt(parameterIndex);
+                    lvi.ToolTipText = parameterType.Description;
+                    parameterName = parameterType.Name;
+                    if (parameter.DataType != parameterType.DataType)
                         lvi.ForeColor = Color.OrangeRed;
                 }
                 else
@@ -207,6 +225,10 @@ namespace SonicColorsSetEditor
             }
         }
 
+        /// <summary>
+        /// Updates the GUI to show the information of the passed SetObject
+        /// </summary>
+        /// <param name="setObject"></param>
         public void UpdateSetObject(SetObject setObject)
         {
             if (setObject != null)
@@ -238,7 +260,6 @@ namespace SonicColorsSetEditor
                     ListView_CustomData.Items.Add(lvi);
                 }
                 UpdateParameters(setObject);
-
             }
         }
 
@@ -253,7 +274,8 @@ namespace SonicColorsSetEditor
             if (filePath.ToLower().EndsWith(".orc"))
             {
                 SetData.Load(filePath, TemplatesColors);
-            }else if (filePath.ToLower().EndsWith(".xml"))
+            }
+            else if (filePath.ToLower().EndsWith(".xml"))
             {
                 CreateObjectTemplateFromXMLSetData(filePath, true);
                 SetData.ImportXML(filePath);
@@ -273,9 +295,10 @@ namespace SonicColorsSetEditor
             Message($"Loaded {SetData.Objects.Count} Objects.");
         }
 
-        public void SaveSetData()
+        public void SaveSetData(bool saveAs = false)
         {
-            if (string.IsNullOrEmpty(LoadedFilePath) || saveAsNow)
+            // Opens the Save dialog if saveAs is true or there is no path for setData
+            if (string.IsNullOrEmpty(LoadedFilePath) || saveAs)
             {
                 var sfd = new SaveFileDialog()
                 {
@@ -285,10 +308,10 @@ namespace SonicColorsSetEditor
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     LoadedFilePath = sfd.FileName;
-                    saveAsNow = false;
+                    saveAs = false;
                 }
             }
-            if (!string.IsNullOrEmpty(LoadedFilePath) && !saveAsNow)
+            if (!string.IsNullOrEmpty(LoadedFilePath) && !saveAs)
             {
                 Console.WriteLine("Saving SetData File: {0}", LoadedFilePath);
                 if (LoadedFilePath.ToLower().EndsWith(".orc"))
@@ -366,11 +389,33 @@ namespace SonicColorsSetEditor
         public static void WriteDefaultCustomData(SetObject setObject)
         {
             setObject.CustomData.Add("Unknown1", new SetObjectParam(typeof(ushort), (ushort)0));
-            setObject.CustomData.Add("Unknown2", new SetObjectParam(typeof(ushort), (uint)0));
-            setObject.CustomData.Add("Unknown3", new SetObjectParam(typeof(ushort), (uint)0));
-            setObject.CustomData.Add("Unknown4", new SetObjectParam(typeof(ushort), (float)0));
-            setObject.CustomData.Add("RangeIn", new SetObjectParam(typeof(ushort), (float)1000f));
-            setObject.CustomData.Add("RangeOut", new SetObjectParam(typeof(ushort), (float)1200f));
+            setObject.CustomData.Add("Unknown2", new SetObjectParam(typeof(uint), 0u));
+            setObject.CustomData.Add("Unknown3", new SetObjectParam(typeof(uint), 0u));
+            setObject.CustomData.Add("Unknown4", new SetObjectParam(typeof(float), 0f));
+            setObject.CustomData.Add("RangeIn" , new SetObjectParam(typeof(float), 1000f));
+            setObject.CustomData.Add("RangeOut", new SetObjectParam(typeof(float), 1200f));
+        }
+
+        /// <summary>
+        /// Saves the SetData then Builds the CPK (if CPKMaker.dll exists)
+        /// </summary>
+        /// <returns>INT: The Status</returns>
+        public int SaveAndBuildCPK()
+        {
+            // Saves the SetData
+            SaveSetData();
+            Console.WriteLine("Saved.");
+            // Checks if CPKMaker is enabled
+            if (HasCPKMaker)
+            {
+                // Creates an instance of CPKMaker
+                var cpkMaker = new CPKMaker();
+                Console.Write("Building CPK... ");
+                cpkMaker.BuildCPK(CPKDirectory);
+                Console.WriteLine("Done.");
+                return 0;
+            }else
+                return -1;
         }
 
         // From GameList.cs (857cc8cfcb799702e2a1312e78df73eaa60e6ec8)
@@ -427,7 +472,7 @@ namespace SonicColorsSetEditor
 
         private void ReloadTemplates_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Loads the templates
+            // Loads the object templates
             ComboBox_ObjectType.Items.Clear();
             TemplatesColors = LoadObjectTemplates(SonicColorsShortName);
             foreach (string objName in TemplatesColors.Keys)
@@ -459,14 +504,12 @@ namespace SonicColorsSetEditor
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveAsNow = false;
             SaveSetData();
         }
 
         private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveAsNow = true;
-            SaveSetData();
+            SaveSetData(true);
         }
 
         private void ToolStripMenuItem_OpenExtractedCPK_Click(object sender, EventArgs e)
@@ -492,12 +535,8 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndBuildCPK_Click(object sender, EventArgs e)
         {
-            saveAsNow = false;
-            SaveSetData();
-            Console.WriteLine("Building CPK...");
-            var cpkMaker = new CPKMaker();
-            cpkMaker.BuildCPK(CPKDirectory);
-            MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (SaveAndBuildCPK() == 0)
+                MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void ToolStripMenuItem_ExtractCPK_Click(object sender, EventArgs e)
@@ -536,13 +575,7 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
-            saveAsNow = false;
-            SaveSetData();
-            Console.WriteLine("Saved.");
-            var cpkMaker = new CPKMaker();
-            Console.Write("Building CPK... ");
-            cpkMaker.BuildCPK(CPKDirectory);
-            Console.WriteLine("Done.");
+            SaveAndBuildCPK();
 
             if (Config.DolphinExecutablePath.Length == 0)
             {
@@ -589,8 +622,11 @@ namespace SonicColorsSetEditor
                 Console.WriteLine("Saving Dolphin Config");
                 File.WriteAllLines(dolphinConfigPath, dolphinConfig);
 
+                // Starts Dolphin
                 var process = Process.Start(Config.DolphinExecutablePath, $"/b -e \"{dolFilePath}\"");
                 Console.WriteLine("Starting Dolphin... [{0}]", process.StartInfo.Arguments);
+
+                // Actively checks if Dolphin is running and if there is a "Warning" message box
                 while (!process.HasExited)
                 {
                     Enabled = false;
@@ -599,9 +635,12 @@ namespace SonicColorsSetEditor
                     IntPtr messageBoxHandle = FindWindow(null, "Warning");
                     if (messageBoxHandle == IntPtr.Zero)
                         continue;
+
                     IntPtr labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
                     var sb = new StringBuilder(GetWindowTextLength(labelHandle));
+                    // Gets the text from the message box
                     GetWindowText(labelHandle, sb, sb.Capacity);
+                    // Checks if it contains "Unknown instruction", if found, then kill the process
                     if (sb.ToString().Contains("Unknown instruction"))
                     {
                         process.Kill();
@@ -625,7 +664,7 @@ namespace SonicColorsSetEditor
 
         #endregion ToolStripMenuItem
 
-        #region Transforms
+        #region GUIEventsTransforms
 
         private void Button_TransformApply_Click(object sender, EventArgs e)
         {
@@ -687,7 +726,7 @@ namespace SonicColorsSetEditor
             }
         }
 
-        #endregion Transforms
+        #endregion GUIEventsTransforms
 
         #region ObjectSelection
 
@@ -715,6 +754,7 @@ namespace SonicColorsSetEditor
 
         #endregion ObjectSelection
 
+        #region OtherGUIEvents
         private void ListView_Param_DoubleClick(object sender, EventArgs e)
         {
             if (ListView_Param.SelectedItems.Count != 0)
@@ -765,6 +805,11 @@ namespace SonicColorsSetEditor
         private void ListView_Param_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             Button_RemoveParam.Enabled = e.IsSelected;
+            if (e.IsSelected)
+            {
+                var lvi = ListView_Param.SelectedItems[0];
+                ToolStrip_Label.Text = lvi.ToolTipText;
+            }
         }
 
         private void MainForm_DragEnter(object sender, DragEventArgs e)
@@ -788,9 +833,9 @@ namespace SonicColorsSetEditor
                     OpenSetData(files[0]);
             }
         }
+        #endregion OtherGUIEvents
 
         // Pinvokes
-
         [DllImport("user32.dll")]
         private static extern IntPtr GetDlgItem(IntPtr dialogHandle, int controlID);
 

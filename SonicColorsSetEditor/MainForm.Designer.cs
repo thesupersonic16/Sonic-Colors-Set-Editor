@@ -43,6 +43,7 @@
             this.ToolStripMenuItem_ExtractCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_SaveAndLaunchSC = new System.Windows.Forms.ToolStripMenuItem();
             this.ReloadTemplates_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ReloadSetData_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListView_Objects = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -85,7 +86,6 @@
             this.Button_RemoveObject = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStrip_Label = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ReloadSetData_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.NumericUpDown_ObjectID)).BeginInit();
@@ -242,6 +242,15 @@
             this.ReloadTemplates_ToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
             this.ReloadTemplates_ToolStripMenuItem.Text = "Reload Templates";
             this.ReloadTemplates_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadTemplates_ToolStripMenuItem_Click);
+            // 
+            // ReloadSetData_ToolStripMenuItem
+            // 
+            this.ReloadSetData_ToolStripMenuItem.Enabled = false;
+            this.ReloadSetData_ToolStripMenuItem.Name = "ReloadSetData_ToolStripMenuItem";
+            this.ReloadSetData_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.ReloadSetData_ToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
+            this.ReloadSetData_ToolStripMenuItem.Text = "Reload SetData";
+            this.ReloadSetData_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadSetData_ToolStripMenuItem_Click);
             // 
             // ListView_Objects
             // 
@@ -758,15 +767,6 @@
             this.ToolStrip_Label.BackColor = System.Drawing.SystemColors.Control;
             this.ToolStrip_Label.Name = "ToolStrip_Label";
             this.ToolStrip_Label.Size = new System.Drawing.Size(0, 17);
-            // 
-            // ReloadSetData_ToolStripMenuItem
-            // 
-            this.ReloadSetData_ToolStripMenuItem.Enabled = false;
-            this.ReloadSetData_ToolStripMenuItem.Name = "ReloadSetData_ToolStripMenuItem";
-            this.ReloadSetData_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.ReloadSetData_ToolStripMenuItem.Size = new System.Drawing.Size(240, 22);
-            this.ReloadSetData_ToolStripMenuItem.Text = "Reload SetData";
-            this.ReloadSetData_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadSetData_ToolStripMenuItem_Click);
             // 
             // MainForm
             // 
