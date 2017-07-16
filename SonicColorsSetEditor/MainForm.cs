@@ -303,7 +303,7 @@ namespace SonicColorsSetEditor
                 var sfd = new SaveFileDialog()
                 {
                     Title = "Save SetData",
-                    Filter = $"{GameName} SetData|*.orc|XML|*.xml"
+                    Filter = $"{GameName} SetData|*.orc|Sonic Generations SetData|*.set.xml|XML|*.xml"
                 };
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -317,6 +317,10 @@ namespace SonicColorsSetEditor
                 if (LoadedFilePath.ToLower().EndsWith(".orc"))
                 {
                     SetData.Save(LoadedFilePath, true);
+                }
+                else if (LoadedFilePath.ToLower().EndsWith(".set.xml"))
+                {
+                    SetData.GensExportXML(LoadedFilePath, TemplatesColors);
                 }
                 else if (LoadedFilePath.ToLower().EndsWith(".xml"))
                 {
