@@ -22,9 +22,14 @@ namespace SonicColorsSetEditor
     public partial class MainForm : Form
     {
 
+        // Paths
+        public static string TemplatesPath = Path.Combine(Application.StartupPath, "Templates");
+
+        // Names
         public static string SonicColorsShortName = "Colors";
         public static string ProgramName = "Sonic Colors Set Editor";
         public static string GameName = "Sonic Colors";
+
         public static bool HasCPKMaker = false;
         public static bool UseOtherEnglish = false; // lol
         public static bool HasBeenInit = false;
@@ -73,9 +78,10 @@ namespace SonicColorsSetEditor
             else
             {
                 // Loads the object templates
-                TemplatesColors = LoadObjectTemplates(SonicColorsShortName);
+                TemplatesColors = SetObjectType.LoadObjectTemplates(TemplatesPath, SonicColorsShortName);
                 foreach (string objName in TemplatesColors.Keys)
                     ComboBox_ObjectType.Items.Add(objName);
+                Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
             }
 
             if (File.Exists("CpkMaker.dll"))
@@ -422,49 +428,6 @@ namespace SonicColorsSetEditor
                 return -1;
         }
 
-        // From GameList.cs (857cc8cfcb799702e2a1312e78df73eaa60e6ec8)
-        private static Dictionary<string, SetObjectType> LoadObjectTemplates(string shortName)
-        {
-            Console.WriteLine("Loading Templates...");
-            var sdir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var dirPath = Helpers.CombinePaths(sdir,
-                "Templates", shortName);
-
-            if (!Directory.Exists(dirPath))
-            {
-                Console.WriteLine("WARNING: Templates folder doesn't exist.");
-                Console.WriteLine("         This folder is required for converting .orc files to .xml");
-                return null;
-            }
-            var objectTemplates = new Dictionary<string, SetObjectType>();
-
-            foreach (var dir in Directory.GetDirectories(dirPath))
-            {
-                //TODO: Categories.
-                foreach (var file in Directory.GetFiles(dir, "*" + SetObjectType.Extension))
-                {
-                    var fileInfo = new FileInfo(file);
-                    var template = new SetObjectType();
-                    string objTypeName = fileInfo.Name.Substring(0,
-                        fileInfo.Name.Length - SetObjectType.Extension.Length);
-
-                    template.Load(file);
-                    if (objectTemplates.ContainsKey(objTypeName))
-                    {
-                        Console.WriteLine("WARNING: Skipping over duplicate template \"" +
-                            objTypeName + "\".");
-                        continue;
-                    }
-
-                    objectTemplates.Add(objTypeName, template);
-                    Console.WriteLine("Loaded Template for \"" + objTypeName + "\".");
-                }
-            }
-
-            Console.WriteLine($"Loaded {objectTemplates.Count} Templates.\n");
-            return objectTemplates;
-        }
-
         #region ToolStripMenuItem
 
         private void ReloadSetData_ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -478,9 +441,10 @@ namespace SonicColorsSetEditor
         {
             // Loads the object templates
             ComboBox_ObjectType.Items.Clear();
-            TemplatesColors = LoadObjectTemplates(SonicColorsShortName);
+            TemplatesColors = SetObjectType.LoadObjectTemplates(TemplatesPath, SonicColorsShortName);
             foreach (string objName in TemplatesColors.Keys)
                 ComboBox_ObjectType.Items.Add(objName);
+            Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
         }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
