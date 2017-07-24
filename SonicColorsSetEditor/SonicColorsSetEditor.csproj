@@ -52,6 +52,7 @@
     <Compile Include="AddParamForm.Designer.cs">
       <DependentUpon>AddParamForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GenerationsConvert.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="CPKMaker.cs" />
     <Compile Include="EditParamForm.cs">

@@ -40,6 +40,10 @@ namespace SonicColorsSetEditor
         public string CPKDirectory = "";
         public string LoadedFilePath = "";
 
+        //Generations conversion
+        public ColorstoGensSetData ColorstoGensSetData = null;
+        public Dictionary<string, string> ColorstoGensRenamers = null;
+
         public MainForm()
         {
             // Change English. lol
@@ -82,6 +86,14 @@ namespace SonicColorsSetEditor
                 foreach (string objName in TemplatesColors.Keys)
                     ComboBox_ObjectType.Items.Add(objName);
                 Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
+                
+                // Load the Renames file
+                if (File.Exists("Templates/Colors/Modifiers-ColorsToGenerations.xml"))
+                {
+                    var doc = XDocument.Load("Templates/Colors/Modifiers-ColorsToGenerations.xml");
+                    var rootNodes = doc.Root.DescendantNodes().OfType<XElement>();
+                    ColorstoGensRenamers = rootNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                }
             }
 
             if (File.Exists("CpkMaker.dll"))
@@ -326,7 +338,14 @@ namespace SonicColorsSetEditor
                 }
                 else if (LoadedFilePath.ToLower().EndsWith(".set.xml"))
                 {
-                    SetData.GensExportXML(LoadedFilePath, TemplatesColors);
+                    ColorstoGensSetData = new ColorstoGensSetData();
+                    //ColorstoGensSetData.Header = SetData.Header;
+                    ColorstoGensSetData.Name = SetData.Name;
+                    ColorstoGensSetData.Objects = SetData.Objects;
+                    ColorstoGensSetData.GensExportXML(LoadedFilePath, TemplatesColors, ColorstoGensRenamers);
+
+                    MessageBox.Show("This feature is currently in development. In order to prevent bugs caused by the program remaining open after an export, the program will now close, but you may open it again immediately without consequence. Thank you for your understanding.");
+                    Application.Exit();
                 }
                 else if (LoadedFilePath.ToLower().EndsWith(".xml"))
                 {
