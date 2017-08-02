@@ -197,6 +197,11 @@ namespace HedgeLib.Sets
                         var temptemp = temp.X;
                         temp.X = temp.Z;
                         temp.Z = temptemp;
+
+                        if (rotateModifier == 90)
+                        {
+                            temp.X = temp.X * -1;
+                        }
                     }
                     transform.Rotation = new Quaternion(temp);
                 }
