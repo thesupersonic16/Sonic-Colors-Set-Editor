@@ -48,7 +48,7 @@ namespace SonicColorsSetEditor
             catch { }
         }
 
-        public uint GenerateID(SetData setData)
+        public static uint GenerateID(SetData setData)
         {
             bool taken = false;
             for(uint i = 0; i < setData.Objects.Count; ++i)

@@ -148,6 +148,7 @@ namespace SonicColorsSetEditor
                 ListView_Objects.Enabled = true;
                 Button_AddObject.Enabled = true;
                 Button_RemoveObject.Enabled = true;
+                ReassignAllObjects_ToolStripMenuItem.Enabled = true;
             }
             else
             {
@@ -157,6 +158,7 @@ namespace SonicColorsSetEditor
                 groupBox1.Enabled = false;
                 ToolStripMenuItem_BuildCPK.Enabled = false;
                 ToolStripMenuItem_SaveAndBuildCPK.Enabled = false;
+                ReassignAllObjects_ToolStripMenuItem.Enabled = false;
             }
         }
 
@@ -279,6 +281,9 @@ namespace SonicColorsSetEditor
 
             if (filePath.ToLower().EndsWith(".orc"))
             {
+                if (Path.GetDirectoryName(filePath).EndsWith("set"))
+                    CPKDirectory = Directory.GetParent(Path.GetDirectoryName(filePath))
+                        .FullName;
                 SetData.Load(filePath, TemplatesColors);
             }
             else if (filePath.ToLower().EndsWith(".xml"))
@@ -295,10 +300,13 @@ namespace SonicColorsSetEditor
             if (!string.IsNullOrEmpty(LoadedFilePath))
                 ReloadSetData_ToolStripMenuItem.Enabled = true;
 
-            UpdateObjects();
             saveToolStripMenuItem.Enabled = true;
             saveAsToolStripMenuItem.Enabled = true;
+            Message($"Loaded {SetData.Objects.Count} Objects. Removing Unknown Objects");
+            // Remove SetObjects that have no templates
+            SetData.Objects.RemoveAll(t => string.IsNullOrEmpty(t.ObjectType));
             Message($"Loaded {SetData.Objects.Count} Objects.");
+            UpdateObjects();
         }
 
         public void SaveSetData(bool saveAs = false)
@@ -426,6 +434,63 @@ namespace SonicColorsSetEditor
 
         #region ToolStripMenuItem
 
+        private void New_SOBJ_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SetData != null)
+                new NewObjectForm(this).ShowDialog();
+            UpdateObjects();
+        }
+
+        private void Duplicate_SOBJ_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedSetObject != null)
+            {
+                var sobj = new SetObject();
+                sobj.ObjectID = NewObjectForm.GenerateID(SetData);
+                sobj.ObjectType = SelectedSetObject.ObjectType;
+                sobj.Transform = new SetObjectTransform();
+                sobj.Transform.Position = SelectedSetObject.Transform.Position;
+                sobj.Transform.Rotation = SelectedSetObject.Transform.Rotation;
+                sobj.Transform.Scale = SelectedSetObject.Transform.Scale;
+                
+                // Copy Params
+                foreach (var param in SelectedSetObject.Parameters)
+                {
+                    var newParam = new SetObjectParam();
+                    newParam.Data = param.Data;
+                    newParam.DataType = param.DataType;
+                    sobj.Parameters.Add(newParam);
+                }
+
+                // Copy Transforms
+                var transforms = new List<SetObjectTransform>();
+                foreach (var transform in SelectedSetObject.Children)
+                {
+                    var newTransform = new SetObjectTransform();
+                    newTransform.Position = transform.Position;
+                    newTransform.Rotation = transform.Rotation;
+                    newTransform.Scale = transform.Scale;
+                    transforms.Add(newTransform);
+                }
+                sobj.Children = transforms.ToArray();
+
+                SetData.Objects.Add(sobj);
+                SelectSetObject(sobj);
+                UpdateObjects();
+            }
+        }
+
+        private void Delete_SOBJ_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedSetObject != null)
+            {
+                SetData.Objects.Remove(SelectedSetObject);
+                SelectSetObject(null);
+                UpdateObjects();
+            }
+
+        }
+
         private void ReloadSetData_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Reloading SetData...");
@@ -441,6 +506,14 @@ namespace SonicColorsSetEditor
             foreach (string objName in TemplatesColors.Keys)
                 ComboBox_ObjectType.Items.Add(objName);
             Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
+        }
+
+        private void ReassignAllObjects_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SetData != null)
+                for (int i = 0; i < SetData.Objects.Count; ++i)
+                    SetData.Objects[i].ObjectID = (uint)i;
+            UpdateObjects();
         }
 
         private void NewToolStripMenuItem_Click(object sender, EventArgs e)
