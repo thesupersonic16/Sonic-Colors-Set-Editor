@@ -43,6 +43,8 @@ namespace SonicColorsSetEditor
         //Generations conversion
         public ColorstoGensSetData ColorstoGensSetData = null;
         public Dictionary<string, string> ColorstoGensRenamers = null;
+        public Dictionary<string, string> ColorstoGensParamMods = null;
+        public Dictionary<string, string> ColorstoGensRotateMods = null;
 
         public MainForm()
         {
@@ -87,12 +89,16 @@ namespace SonicColorsSetEditor
                     ComboBox_ObjectType.Items.Add(objName);
                 Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
                 
-                // Load the Renames file
+                // Load the Modifiers file
                 if (File.Exists("Templates/Colors/Modifiers-ColorsToGenerations.xml"))
                 {
                     var doc = XDocument.Load("Templates/Colors/Modifiers-ColorsToGenerations.xml");
-                    var rootNodes = doc.Root.DescendantNodes().OfType<XElement>();
-                    ColorstoGensRenamers = rootNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                    var renameNodes = doc.Root.Element("Rename").DescendantNodes().OfType<XElement>();
+                    var paramNodes = doc.Root.Element("Parameters").DescendantNodes().OfType<XElement>();
+                    var rotateNodes = doc.Root.Element("Rotation").DescendantNodes().OfType<XElement>();
+                    ColorstoGensRenamers = renameNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                    ColorstoGensParamMods = paramNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                    ColorstoGensRotateMods = rotateNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
                 }
             }
 
@@ -147,6 +153,9 @@ namespace SonicColorsSetEditor
 
                     if (lvi.SubItems[1].Text.Length > longestNameLength)
                         longestNameLength = lvi.SubItems[1].Text.Length;
+
+                    if (setObject.IsTemplateExists == false)
+                        lvi.ForeColor = Color.Red;
 
                     ListView_Objects.Items.Add(lvi);
                 }
@@ -342,7 +351,7 @@ namespace SonicColorsSetEditor
                     //ColorstoGensSetData.Header = SetData.Header;
                     ColorstoGensSetData.Name = SetData.Name;
                     ColorstoGensSetData.Objects = SetData.Objects;
-                    ColorstoGensSetData.GensExportXML(LoadedFilePath, TemplatesColors, ColorstoGensRenamers);
+                    ColorstoGensSetData.GensExportXML(LoadedFilePath, TemplatesColors, ColorstoGensRenamers, ColorstoGensParamMods, ColorstoGensRotateMods);
 
                     MessageBox.Show("This feature is currently in development. In order to prevent bugs caused by the program remaining open after an export, the program will now close, but you may open it again immediately without consequence. Thank you for your understanding.");
                     Application.Exit();

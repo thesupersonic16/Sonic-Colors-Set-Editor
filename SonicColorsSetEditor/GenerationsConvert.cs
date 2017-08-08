@@ -10,22 +10,25 @@ namespace HedgeLib.Sets
     public class ColorstoGensSetData : ColorsSetData
     {
         public void GensExportXML(string filePath,
-            Dictionary<string, SetObjectType> objectTemplates = null, Dictionary<string, string> ColorstoGensRenamers = null)
+            Dictionary<string, SetObjectType> objectTemplates = null, Dictionary<string, string> ColorstoGensRenamers = null, Dictionary<string, string> ColorstoGensParamMods = null, Dictionary<string, string> ColorstoGensRotateMods = null)
         {
             using (var fileStream = File.OpenWrite(filePath))
             {
-                GensExportXML(fileStream, objectTemplates, ColorstoGensRenamers);
+                GensExportXML(fileStream, objectTemplates, ColorstoGensRenamers, ColorstoGensParamMods, ColorstoGensRotateMods);
             }
         }
 
         public void GensExportXML(Stream fileStream,
-            Dictionary<string, SetObjectType> objectTemplates = null, Dictionary<string, string> ColorstoGensRenamers = null)
+            Dictionary<string, SetObjectType> objectTemplates = null, Dictionary<string, string> ColorstoGensRenamers = null, Dictionary<string, string> ColorstoGensParamMods = null, Dictionary<string, string> ColorstoGensRotateMods = null)
         {
             //Convert to XML file and save
             var rootElem = new XElement("SetObject");
 
             foreach (var obj in Objects)
             {
+                //Skip objects with no template.
+                if (obj.IsTemplateExists == false) continue;
+
                 //Generate Object Element
                 var GensObjName = obj.ObjectType;
                 //Messy rename to prevent error caused by element name starting with a number.
@@ -69,9 +72,13 @@ namespace HedgeLib.Sets
                 objElem.Add(GeneratePositionElement(obj.Transform));
                 //Apply rotation to objects that need it
                 var rotateModifier = new float();
-                if ((obj.ObjectType == "JumpBoard") || (obj.ObjectType == "DashRing") || (obj.ObjectType == "ChageMode_3Dto2D") || (obj.ObjectType == "RainbowRing") || (obj.ObjectType == "TrickJump") || (obj.ObjectType == "CameraCollisionBoard"))
+                foreach (var node in ColorstoGensRotateMods)
                 {
-                    rotateModifier = -180;
+                    if (obj.ObjectType == node.Key)
+                    {
+                        rotateModifier = float.Parse(node.Value.ToString());
+                        break;
+                    }
                 }
                 objElem.Add(GenerateRotationElement(obj.Transform, obj.ObjectType, rotateModifier));
 
@@ -118,6 +125,14 @@ namespace HedgeLib.Sets
 
                 if (dataType == typeof(Vector3))
                 {
+                    //Scale
+                    var tempVector3 = new Vector3();
+                    tempVector3 = (Vector3)param.Data;
+                    tempVector3.X = (tempVector3.X / 10);
+                    tempVector3.Y = (tempVector3.Y / 10);
+                    tempVector3.Z = (tempVector3.Z / 10);
+                    param.Data = tempVector3;
+
                     Helpers.XMLWriteVector3(elem, (Vector3)param.Data);
                 }
                 else if (dataType == typeof(Vector4) || dataType == typeof(Quaternion))
@@ -129,13 +144,13 @@ namespace HedgeLib.Sets
                     var singleValue = new Single();
                     singleValue = float.Parse(param.Data.ToString());
                     //Parameter scaling
-                    if ((name.Contains("Speed") || name.Contains("Velocity") || name.Contains("TargetOffset") || name.Contains("Distance")) && param.DataType.Name == "Single")
+                    foreach (var node in ColorstoGensParamMods)
                     {
-                        singleValue = singleValue / 10;
-                    }
-                    else if (name.Contains("Collision") && param.DataType.Name == "Single")
-                    {
-                        singleValue = singleValue / 5;
+                        if (name.Contains(node.Key))
+                        {
+                            singleValue = singleValue / float.Parse(node.Value.ToString());
+                            break;
+                        }
                     }
 
                     if (Math.Abs(singleValue) < 1)
@@ -155,6 +170,15 @@ namespace HedgeLib.Sets
                 else
                 {
                     elem.Value = param.Data.ToString();
+                    //Boolean caps
+                    if (elem.Value == "True")
+                    {
+                        elem.Value = "true";
+                    }
+                    else if (elem.Value == "False")
+                    {
+                        elem.Value = "false";
+                    }
                 }
 
                 return elem;
