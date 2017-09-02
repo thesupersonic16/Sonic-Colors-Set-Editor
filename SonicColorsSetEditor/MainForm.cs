@@ -75,10 +75,10 @@ namespace SonicColorsSetEditor
                 var result = MessageBox.Show("No Templates Found\n" +
                     "Please download the Templates folder from HedgeLib's Github page\n" +
                     "and place it in the same directory as the executable\n" +
-                    "https://github.com/Radfordhound/HedgeLib/tree/master/HedgeEdit/Templates",
+                    "https://github.com/SKmaric/HedgeLib/tree/master/HedgeEdit/Templates",
                     ProgramName, MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                 if (result == DialogResult.OK)
-                    Process.Start("https://github.com/Radfordhound/HedgeLib/tree/master/HedgeEdit/Templates");
+                    Process.Start("https://github.com/SKmaric/HedgeLib/tree/master/HedgeEdit/Templates");
                 Environment.Exit(-1);
             }
             else
