@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Label_Objects = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,6 +93,7 @@
             this.Button_RemoveObject = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.ToolStrip_Label = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ToolStripMenuItem_LaunchSCWithoutSaving = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SOBJ_ContextMenuStrip.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -204,6 +206,7 @@
             this.ToolStripMenuItem_SaveAndBuildCPK,
             this.ToolStripMenuItem_ExtractCPK,
             this.ToolStripMenuItem_SaveAndLaunchSC,
+            this.ToolStripMenuItem_LaunchSCWithoutSaving,
             this.ReloadTemplates_ToolStripMenuItem,
             this.ReloadSetData_ToolStripMenuItem,
             this.ReassignAllObjects_ToolStripMenuItem});
@@ -217,7 +220,7 @@
             this.ToolStripMenuItem_BuildCPK.Name = "ToolStripMenuItem_BuildCPK";
             this.ToolStripMenuItem_BuildCPK.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.B)));
-            this.ToolStripMenuItem_BuildCPK.Size = new System.Drawing.Size(254, 22);
+            this.ToolStripMenuItem_BuildCPK.Size = new System.Drawing.Size(273, 22);
             this.ToolStripMenuItem_BuildCPK.Text = "Build CPK";
             this.ToolStripMenuItem_BuildCPK.Click += new System.EventHandler(this.ToolStripMenuItem_BuildCPK_Click);
             // 
@@ -226,7 +229,7 @@
             this.ToolStripMenuItem_SaveAndBuildCPK.Enabled = false;
             this.ToolStripMenuItem_SaveAndBuildCPK.Name = "ToolStripMenuItem_SaveAndBuildCPK";
             this.ToolStripMenuItem_SaveAndBuildCPK.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.ToolStripMenuItem_SaveAndBuildCPK.Size = new System.Drawing.Size(254, 22);
+            this.ToolStripMenuItem_SaveAndBuildCPK.Size = new System.Drawing.Size(273, 22);
             this.ToolStripMenuItem_SaveAndBuildCPK.Text = "Save And Build CPK";
             this.ToolStripMenuItem_SaveAndBuildCPK.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndBuildCPK_Click);
             // 
@@ -235,7 +238,7 @@
             this.ToolStripMenuItem_ExtractCPK.Enabled = false;
             this.ToolStripMenuItem_ExtractCPK.Name = "ToolStripMenuItem_ExtractCPK";
             this.ToolStripMenuItem_ExtractCPK.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.ToolStripMenuItem_ExtractCPK.Size = new System.Drawing.Size(254, 22);
+            this.ToolStripMenuItem_ExtractCPK.Size = new System.Drawing.Size(273, 22);
             this.ToolStripMenuItem_ExtractCPK.Text = "Extract CPK";
             this.ToolStripMenuItem_ExtractCPK.Click += new System.EventHandler(this.ToolStripMenuItem_ExtractCPK_Click);
             // 
@@ -244,7 +247,7 @@
             this.ToolStripMenuItem_SaveAndLaunchSC.Enabled = false;
             this.ToolStripMenuItem_SaveAndLaunchSC.Name = "ToolStripMenuItem_SaveAndLaunchSC";
             this.ToolStripMenuItem_SaveAndLaunchSC.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(254, 22);
+            this.ToolStripMenuItem_SaveAndLaunchSC.Size = new System.Drawing.Size(273, 22);
             this.ToolStripMenuItem_SaveAndLaunchSC.Text = "Save and Launch SC";
             this.ToolStripMenuItem_SaveAndLaunchSC.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndLaunchSC_Click);
             // 
@@ -253,7 +256,7 @@
             this.ReloadTemplates_ToolStripMenuItem.Name = "ReloadTemplates_ToolStripMenuItem";
             this.ReloadTemplates_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.R)));
-            this.ReloadTemplates_ToolStripMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.ReloadTemplates_ToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
             this.ReloadTemplates_ToolStripMenuItem.Text = "Reload Templates";
             this.ReloadTemplates_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadTemplates_ToolStripMenuItem_Click);
             // 
@@ -262,7 +265,7 @@
             this.ReloadSetData_ToolStripMenuItem.Enabled = false;
             this.ReloadSetData_ToolStripMenuItem.Name = "ReloadSetData_ToolStripMenuItem";
             this.ReloadSetData_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
-            this.ReloadSetData_ToolStripMenuItem.Size = new System.Drawing.Size(254, 22);
+            this.ReloadSetData_ToolStripMenuItem.Size = new System.Drawing.Size(273, 22);
             this.ReloadSetData_ToolStripMenuItem.Text = "Reload SetData";
             this.ReloadSetData_ToolStripMenuItem.Click += new System.EventHandler(this.ReloadSetData_ToolStripMenuItem_Click);
             // 
@@ -828,6 +831,15 @@
             this.ToolStrip_Label.Name = "ToolStrip_Label";
             this.ToolStrip_Label.Size = new System.Drawing.Size(0, 17);
             // 
+            // ToolStripMenuItem_LaunchSCWithoutSaving
+            // 
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Enabled = false;
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Name = "ToolStripMenuItem_LaunchSCWithoutSaving";
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Size = new System.Drawing.Size(273, 22);
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Text = "Launch SC Without Saving";
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Click += new System.EventHandler(this.ToolStripMenuItem_LaunchSCWithoutSaving_Click);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -843,6 +855,7 @@
             this.Controls.Add(this.Label_Objects);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "MainForm";
@@ -943,6 +956,7 @@
         private System.Windows.Forms.ToolStripMenuItem Delete_SOBJ_ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem Duplicate_SOBJ_ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ReassignAllObjects_ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_LaunchSCWithoutSaving;
     }
 }
 

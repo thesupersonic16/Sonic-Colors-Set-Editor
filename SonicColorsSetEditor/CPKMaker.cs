@@ -62,8 +62,6 @@ namespace SonicColorsSetEditor
             }
             
             StartToBuild(filePath);
-
-            WaitForComplete();
         }
 
         public void BuildCPK(string inDirectory)
@@ -91,6 +89,11 @@ namespace SonicColorsSetEditor
                 Path.GetFileNameWithoutExtension(inFilePath);
             ExtractCPK(directory, inFilePath);
             return directory;
+        }
+
+        public bool IsCompleted()
+        {
+            return Execute() == Status.Complete;
         }
 
         #region CPKMaker Methods
@@ -131,7 +134,52 @@ namespace SonicColorsSetEditor
             var method = CPKMakerType.GetMethod("WaitForComplete");
             return (bool)method.Invoke(CPKMakerObject, new object[0]);
         }
+
+        public Status Execute()
+        {
+            // cpkMaker.Execute();
+            var method = CPKMakerType.GetMethod("Execute");
+            return (Status)method.Invoke(CPKMakerObject, new object[0]);
+        }
+
+        public double GetProgress()
+        {
+            // cpkMaker.GetProgress();
+            var method = CPKMakerType.GetMethod("GetProgress");
+            return (double)method.Invoke(CPKMakerObject, new object[0]);
+        }
+
         #endregion CPKMaker Methods
+
+        public enum Status
+        {
+            Stop,
+            Verified = 202,
+            Verifying = 201,
+            VerifyPreparing = 200,
+            Extracted = 102,
+            Extracting = 101,
+            ExtractPreparing = 100,
+            Complete = 50,
+            CpkBuildFinalize = 17,
+            MselfRewriting = 16,
+            HeaderRewriting = 15,
+            EtocBuilding = 14,
+            GtocBuilding = 13,
+            ItocBuilding = 12,
+            TocBuilding = 11,
+            PreTocBuilding = 10,
+            GtocInfoMaking = 9,
+            Error = -1,
+            ItocInfoMaking = 8,
+            TocInfoMaking = 7,
+            FileDataBuildingCopying = 6,
+            FileDataBuildingStart = 5,
+            FileDataBuildingPrep = 4,
+            PreFileDataBuilding = 3,
+            HeaderSkipping = 2,
+            HeaderMselfSkipping = 1
+        }
 
     }
 }
