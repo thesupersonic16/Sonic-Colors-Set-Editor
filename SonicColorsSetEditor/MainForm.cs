@@ -523,6 +523,13 @@ namespace SonicColorsSetEditor
             catch { }
         }
 
+        public SetObjectTypeParam GetSetObjectTypeParam(string name)
+        {
+            var setObjectType = TemplatesColors[SelectedSetObject.ObjectType];
+            var setObjectParams = setObjectType.Parameters;
+            return setObjectParams.Find(t => name == t.Name);
+        }
+
         #region ToolStripMenuItem
 
         private void New_SOBJ_ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -813,7 +820,7 @@ namespace SonicColorsSetEditor
                 var lvi = ListView_Param.SelectedItems[0];
                 var param = (SetObjectParam)lvi.Tag;
 
-                new EditParamForm(param).ShowDialog();
+                new EditParamForm(param, GetSetObjectTypeParam(lvi.Text)).ShowDialog();
                 lvi.SubItems[1].Text = param.Data.ToString();
             }
         }

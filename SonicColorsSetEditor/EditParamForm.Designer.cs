@@ -38,6 +38,8 @@
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.Button_Cancel = new System.Windows.Forms.Button();
+            this.CheckBox_UseEnum = new System.Windows.Forms.CheckBox();
+            this.ComboBox_Enum = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
@@ -125,12 +127,35 @@
             this.Button_Cancel.Text = "Cancel";
             this.Button_Cancel.UseVisualStyleBackColor = true;
             // 
+            // CheckBox_UseEnum
+            // 
+            this.CheckBox_UseEnum.AutoSize = true;
+            this.CheckBox_UseEnum.Enabled = false;
+            this.CheckBox_UseEnum.Location = new System.Drawing.Point(17, 79);
+            this.CheckBox_UseEnum.Name = "CheckBox_UseEnum";
+            this.CheckBox_UseEnum.Size = new System.Drawing.Size(74, 17);
+            this.CheckBox_UseEnum.TabIndex = 18;
+            this.CheckBox_UseEnum.Text = "Use enum";
+            this.CheckBox_UseEnum.UseVisualStyleBackColor = true;
+            this.CheckBox_UseEnum.CheckedChanged += new System.EventHandler(this.CheckBox_UseEnum_CheckedChanged);
+            // 
+            // ComboBox_Enum
+            // 
+            this.ComboBox_Enum.FormattingEnabled = true;
+            this.ComboBox_Enum.Location = new System.Drawing.Point(71, 49);
+            this.ComboBox_Enum.Name = "ComboBox_Enum";
+            this.ComboBox_Enum.Size = new System.Drawing.Size(120, 21);
+            this.ComboBox_Enum.TabIndex = 19;
+            this.ComboBox_Enum.Visible = false;
+            // 
             // EditParamForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(477, 114);
+            this.Controls.Add(this.ComboBox_Enum);
+            this.Controls.Add(this.CheckBox_UseEnum);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.numericUpDown3);
             this.Controls.Add(this.numericUpDown2);
@@ -165,5 +190,8 @@
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.Button Button_Cancel;
+        private System.Windows.Forms.CheckBox CheckBox_UseEnum;
+        private System.Windows.Forms.ComboBox ComboBox_Enum;
+
     }
 }

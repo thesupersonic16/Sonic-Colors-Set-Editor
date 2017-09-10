@@ -131,13 +131,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\HedgeLib\HedgeLib\HedgeLib.csproj">
       <Project>{eeb16fca-ff9f-40b5-9d43-f2460aa930c8}</Project>
       <Name>HedgeLib</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
