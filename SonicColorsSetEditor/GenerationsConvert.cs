@@ -171,11 +171,11 @@ namespace HedgeLib.Sets
                 {
                     elem.Value = param.Data.ToString();
                     //Boolean caps
-                    if (elem.Value == "True")
+                    if (param.Data.ToString() == "True")
                     {
                         elem.Value = "true";
                     }
-                    else if (elem.Value == "False")
+                    else if (param.Data.ToString() == "False")
                     {
                         elem.Value = "false";
                     }

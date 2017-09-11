@@ -523,6 +523,23 @@ namespace SonicColorsSetEditor
 
         }
 
+        private void rawParameterDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedSetObject.RawParamData != null)
+            {
+                string raw = null;
+                foreach (byte paramByte in SelectedSetObject.RawParamData)
+                {
+                    raw += paramByte.ToString("x") + " ";
+                }
+                MessageBox.Show(raw);
+            }
+            else
+            {
+                MessageBox.Show("Raw data for this object has not been loaded (did you check the template?)");
+            }
+        }
+
         private void ReloadSetData_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Console.WriteLine("Reloading SetData...");
