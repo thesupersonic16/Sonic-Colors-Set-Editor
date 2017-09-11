@@ -59,5 +59,101 @@ namespace SonicColorsSetEditor.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING: Could not find \&quot;CpkMaker.dll!
+        ///This is required to create and extract cpks..
+        /// </summary>
+        internal static string CPKMakerNotFoundText {
+            get {
+                return ResourceManager.GetString("CPKMakerNotFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find boot.dol!
+        ///Make sure boot.dol is in the parent directory of &quot;sonic2010_0&quot;.
+        /// </summary>
+        internal static string DolNotFoundText {
+            get {
+                return ResourceManager.GetString("DolNotFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find Dolphin!.
+        /// </summary>
+        internal static string DolphinNotFoundText {
+            get {
+                return ResourceManager.GetString("DolphinNotFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dolphin is not set up yet!.
+        /// </summary>
+        internal static string DolphinNotSetupText {
+            get {
+                return ResourceManager.GetString("DolphinNotSetupText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please locate your Dolphin executable..
+        /// </summary>
+        internal static string LocateDolphinText {
+            get {
+                return ResourceManager.GetString("LocateDolphinText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please locate Sonic Colors&apos; executable..
+        /// </summary>
+        internal static string LocateSCExecutableText {
+            get {
+                return ResourceManager.GetString("LocateSCExecutableText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One or more set files has been found
+        ///Would you like to load one of the set files?.
+        /// </summary>
+        internal static string MultipleSetDataFoundText {
+            get {
+                return ResourceManager.GetString("MultipleSetDataFoundText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Templates Found!
+        ///Please download the Templates folder from HedgeLib&apos;s Github page
+        ///and place it in the same directory as the executable
+        ///https://github.com/Radfordhound/HedgeLib/tree/master/HedgeEdit/Templates.
+        /// </summary>
+        internal static string NoTemplatesText {
+            get {
+                return ResourceManager.GetString("NoTemplatesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://github.com/Radfordhound/HedgeLib/tree/master/HedgeEdit/Templates.
+        /// </summary>
+        internal static string TemplatesURL {
+            get {
+                return ResourceManager.GetString("TemplatesURL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Guest has stopped working!.
+        /// </summary>
+        internal static string Unknown_InstructionFoundText {
+            get {
+                return ResourceManager.GetString("Unknown_InstructionFoundText", resourceCulture);
+            }
+        }
     }
 }
