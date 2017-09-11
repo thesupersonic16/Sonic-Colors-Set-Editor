@@ -15,7 +15,8 @@ namespace SonicColorsSetEditor
     public partial class WaitCPKBuildForm : Form
     {
         public CPKMaker Cpkmaker;
-        public int lastPercentage = 0;
+        public int Percentage = 0;
+        public bool Running;
 
         public WaitCPKBuildForm(CPKMaker cpkmaker)
         {
@@ -31,13 +32,15 @@ namespace SonicColorsSetEditor
 
         private void WaitForm_Load(object sender, EventArgs e)
         {
+            Running = true;
+            timer1.Enabled = true;
             new Thread(new ThreadStart(Tick)).Start();
             UpdateLabel("Building CPK");
         }
 
         private void Tick()
         {
-            while (true)
+            while (Running)
             { 
                 // Gets the progress.
                 var status = Cpkmaker.Execute();
@@ -58,15 +61,19 @@ namespace SonicColorsSetEditor
                     break;
                 }
 
-                int percentage = (int)Math.Round(Cpkmaker.GetProgress());
-                if (lastPercentage != percentage)
-                    Invoke(new Action(() => ProgressBar_Progress.Value = lastPercentage = percentage));
+                Percentage = (int)Math.Round(Cpkmaker.GetProgress());
             }
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
+            Running = false;
+            DialogResult = DialogResult.Cancel;
+        }
 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            ProgressBar_Progress.Value = Percentage;
         }
     }
 }

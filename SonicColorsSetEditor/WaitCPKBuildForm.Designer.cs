@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WaitCPKBuildForm));
             this.Label_Status = new System.Windows.Forms.Label();
             this.ProgressBar_Progress = new System.Windows.Forms.ProgressBar();
             this.Button_Cancel = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // Label_Status
@@ -64,6 +66,11 @@
             this.Button_Cancel.UseVisualStyleBackColor = true;
             this.Button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 10;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // WaitCPKBuildForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,5 +95,6 @@
         private System.Windows.Forms.Label Label_Status;
         private System.Windows.Forms.ProgressBar ProgressBar_Progress;
         private System.Windows.Forms.Button Button_Cancel;
+        private System.Windows.Forms.Timer timer1;
     }
 }

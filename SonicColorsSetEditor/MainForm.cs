@@ -427,9 +427,16 @@ namespace SonicColorsSetEditor
                 var cpkMaker = new CPKMaker();
                 Console.Write("Building CPK... ");
                 cpkMaker.BuildCPK(CPKDirectory);
-                new WaitCPKBuildForm(cpkMaker).ShowDialog();
+                var status = new WaitCPKBuildForm(cpkMaker).ShowDialog();
                 Console.WriteLine("Done.");
-                return 0;
+                if (status == DialogResult.Yes)
+                    return 0;
+                else if (status == DialogResult.Cancel)
+                    return 2;
+                else if (status == DialogResult.No)
+                    return 3;
+
+                return 1;
             }else
                 return -1;
         }
@@ -710,8 +717,8 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
-            SaveAndBuildCPK();
-            LaunchDolphin();
+            if (SaveAndBuildCPK() == 0)
+                LaunchDolphin();
         }
 
         private void ToolStripMenuItem_LaunchSCWithoutSaving_Click(object sender, EventArgs e)
