@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AddParamForm));
             this.Label_Title = new System.Windows.Forms.Label();
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_OK = new System.Windows.Forms.Button();
@@ -98,6 +99,7 @@
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Label_Title);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AddParamForm";
             this.Text = "Add Parameter";
             this.ResumeLayout(false);

@@ -15,6 +15,7 @@ namespace SonicColorsSetEditor
     public partial class EditParamForm : Form
     {
         public SetObjectParam Param;
+        public SetObjectTypeParam ParamType;
         public Type Type;
         
         public EditParamForm()
@@ -22,24 +23,39 @@ namespace SonicColorsSetEditor
             InitializeComponent();
         }
 
-        public EditParamForm(SetObjectParam param) : this()
+        public EditParamForm(SetObjectParam param, SetObjectTypeParam paramType) : this()
         {
             Param = param;
             Type = param.DataType;
-
+            ParamType = paramType;
+            
             titleLbl.Text += param.DataType.Name;
 
+            if (paramType != null && paramType.Enums.Count > 0)
+            {
+                CheckBox_UseEnum.Enabled = true;
+                foreach (var tempEnum in paramType.Enums)
+                {
+                    ComboBox_Enum.Items.Add(tempEnum);
+                }
+            }
             UpdateTypes();
             Read();
         }
 
         public void UpdateTypes()
-        { 
+        {
             // Hide things
             textBox1.Visible = numericUpDown1.Visible = numericUpDown2.Visible = numericUpDown3.Visible =
-                button1.Visible = false;
+                button1.Visible = ComboBox_Enum.Visible = false;
 
             var type = Type;
+
+            if (CheckBox_UseEnum.Checked)
+            {
+                ComboBox_Enum.Visible = true;
+                return;
+            }
 
             if (type == typeof(string))
             {
@@ -190,6 +206,12 @@ namespace SonicColorsSetEditor
         {
             var type = Type;
 
+            if (CheckBox_UseEnum.Checked)
+            {
+                Param.Data = byte.Parse(((SetObjectTypeParamEnum)ComboBox_Enum.SelectedItem).Value as string);
+                return;
+            }
+
             if (type == typeof(string))
             {
                 Param.Data = textBox1.Text;
@@ -245,6 +267,11 @@ namespace SonicColorsSetEditor
                 button1.Text = "False";
             else if (button1.Text == "False")
                 button1.Text = "True";
+        }
+
+        private void CheckBox_UseEnum_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateTypes();
         }
     }
 }

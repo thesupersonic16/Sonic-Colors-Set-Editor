@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,6 +84,12 @@
     <Compile Include="SelectStageForm.Designer.cs">
       <DependentUpon>SelectStageForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="WaitCPKBuildForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WaitCPKBuildForm.Designer.cs">
+      <DependentUpon>WaitCPKBuildForm.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AddParamForm.resx">
       <DependentUpon>AddParamForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -106,6 +115,9 @@
     <EmbeddedResource Include="SelectStageForm.resx">
       <DependentUpon>SelectStageForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="WaitCPKBuildForm.resx">
+      <DependentUpon>WaitCPKBuildForm.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -118,6 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HedgeLib\HedgeLib\HedgeLib.csproj">

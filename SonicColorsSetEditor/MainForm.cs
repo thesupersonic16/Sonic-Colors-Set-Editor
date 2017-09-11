@@ -133,6 +133,7 @@ namespace SonicColorsSetEditor
                     ToolStripMenuItem_BuildCPK.Enabled = true;
                     ToolStripMenuItem_SaveAndBuildCPK.Enabled = true;
                     ToolStripMenuItem_SaveAndLaunchSC.Enabled = true;
+                    ToolStripMenuItem_LaunchSCWithoutSaving.Enabled = true;
                 }
 
                 int longestNameLength = 0;
@@ -458,10 +459,114 @@ namespace SonicColorsSetEditor
                 var cpkMaker = new CPKMaker();
                 Console.Write("Building CPK... ");
                 cpkMaker.BuildCPK(CPKDirectory);
+                var status = new WaitCPKBuildForm(cpkMaker).ShowDialog();
                 Console.WriteLine("Done.");
-                return 0;
+                if (status == DialogResult.Yes)
+                    return 0;
+                else if (status == DialogResult.Cancel)
+                    return 2;
+                else if (status == DialogResult.No)
+                    return 3;
+
+                return 1;
             }else
                 return -1;
+        }
+
+        public void LaunchDolphin()
+        {
+            if (Config.DolphinExecutablePath.Length == 0)
+            {
+                Message("Dolphin is not set up yet");
+                MessageBox.Show("Please locate your Dolphin executable.", ProgramName);
+                var ofd = new OpenFileDialog()
+                {
+                    Title = "Locate Dolphin.exe",
+                    Filter = "Windows Executable|*.exe"
+                };
+                if (ofd.ShowDialog() == DialogResult.OK)
+                    Config.DolphinExecutablePath = ofd.FileName;
+                else
+                    return;
+                Config.SaveConfig("config.bin");
+            }
+
+            try
+            {
+                string dvdRootPath = Directory.GetParent(CPKDirectory).FullName;
+                string dolFilePath = Helpers.CombinePaths(dvdRootPath, "boot.dol");
+                string apploaderPath = Helpers.CombinePaths(dvdRootPath, "apploader.img");
+
+                if (!File.Exists(dolFilePath))
+                {
+                    MessageBox.Show("Could not find boot.dol\n" +
+                    "Make sure boot.dol is in the parent directory of \"sonic2010_0\"");
+                    return;
+                }
+
+                // Dolphin Config
+                string dolphinConfigPath = Helpers.CombinePaths(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "Dolphin Emulator", "Config", "Dolphin.ini");
+                string[] dolphinConfig = File.ReadAllLines(dolphinConfigPath);
+
+                for (int i = 0; i < dolphinConfig.Length; ++i)
+                {
+                    if (dolphinConfig[i].StartsWith("DVDRoot"))
+                        dolphinConfig[i] = $"DVDRoot = {dvdRootPath}";
+                    if (dolphinConfig[i].StartsWith("Apploader"))
+                        dolphinConfig[i] = $"Apploader = {apploaderPath}";
+                }
+                Console.WriteLine("Saving Dolphin Config");
+                File.WriteAllLines(dolphinConfigPath, dolphinConfig);
+
+                // Starts Dolphin
+                var process = Process.Start(Config.DolphinExecutablePath, $"/b -e \"{dolFilePath}\"");
+                Console.WriteLine("Starting Dolphin... [{0}]", process.StartInfo.Arguments);
+
+                // Actively checks if Dolphin is running and if there is a "Warning" message box
+                while (!process.HasExited)
+                {
+                    Enabled = false;
+                    Thread.Sleep(1000);
+
+                    IntPtr messageBoxHandle = FindWindow(null, "Warning");
+                    if (messageBoxHandle == IntPtr.Zero)
+                        continue;
+
+                    IntPtr labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
+                    var sb = new StringBuilder(GetWindowTextLength(labelHandle));
+                    // Gets the text from the message box
+                    GetWindowText(labelHandle, sb, sb.Capacity);
+                    // Checks if it contains "Unknown instruction", if found, then kill the process
+                    if (sb.ToString().Contains("Unknown instruction"))
+                    {
+                        process.Kill();
+                        Console.WriteLine("The Guest has stopped working!");
+                        Console.WriteLine("Returned: {0}", sb);
+                        MessageBox.Show("The Guest has stopped working.\n" + sb, ProgramName,
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                Console.WriteLine("Process is nolonger running");
+                Enabled = true;
+                Activate();
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Could not find Dolphin\n" +
+                    "Reseting executable path");
+                Config.DolphinExecutablePath = "";
+                Config.SaveConfig("config.bin");
+            }
+            catch { }
+        }
+
+        public SetObjectTypeParam GetSetObjectTypeParam(string name)
+        {
+            var setObjectType = TemplatesColors[SelectedSetObject.ObjectType];
+            var setObjectParams = setObjectType.Parameters;
+            return setObjectParams.Find(t => name == t.Name);
         }
 
         #region ToolStripMenuItem
@@ -661,92 +766,15 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
-            SaveAndBuildCPK();
-
-            if (Config.DolphinExecutablePath.Length == 0)
-            {
-                Message("Dolphin is not set up yet");
-                MessageBox.Show("Please locate your Dolphin executable.", ProgramName);
-                var ofd = new OpenFileDialog()
-                {
-                    Title = "Locate Dolphin.exe",
-                    Filter = "Windows Executable|*.exe"
-                };
-                if (ofd.ShowDialog() == DialogResult.OK)
-                    Config.DolphinExecutablePath = ofd.FileName;
-                else
-                    return;
-                Config.SaveConfig("config.bin");
-            }
-
-            try
-            {
-                string dvdRootPath = Directory.GetParent(CPKDirectory).FullName;
-                string dolFilePath = Helpers.CombinePaths(dvdRootPath, "boot.dol");
-                string apploaderPath = Helpers.CombinePaths(dvdRootPath, "apploader.img");
-
-                if (!File.Exists(dolFilePath))
-                {
-                    MessageBox.Show("Could not find boot.dol\n" +
-                    "Make sure boot.dol is in the parent directory of \"sonic2010_0\"");
-                    return;
-                }
-
-                // Dolphin Config
-                string dolphinConfigPath = Helpers.CombinePaths(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-                    "Dolphin Emulator", "Config", "Dolphin.ini");
-                string[] dolphinConfig = File.ReadAllLines(dolphinConfigPath);
-
-                for (int i = 0; i < dolphinConfig.Length; ++i)
-                {
-                    if (dolphinConfig[i].StartsWith("DVDRoot"))
-                        dolphinConfig[i] = $"DVDRoot = {dvdRootPath}";
-                    if (dolphinConfig[i].StartsWith("Apploader"))
-                        dolphinConfig[i] = $"Apploader = {apploaderPath}";
-                }
-                Console.WriteLine("Saving Dolphin Config");
-                File.WriteAllLines(dolphinConfigPath, dolphinConfig);
-
-                // Starts Dolphin
-                var process = Process.Start(Config.DolphinExecutablePath, $"/b -e \"{dolFilePath}\"");
-                Console.WriteLine("Starting Dolphin... [{0}]", process.StartInfo.Arguments);
-
-                // Actively checks if Dolphin is running and if there is a "Warning" message box
-                while (!process.HasExited)
-                {
-                    Enabled = false;
-                    Thread.Sleep(1000);
-
-                    IntPtr messageBoxHandle = FindWindow(null, "Warning");
-                    if (messageBoxHandle == IntPtr.Zero)
-                        continue;
-
-                    IntPtr labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
-                    var sb = new StringBuilder(GetWindowTextLength(labelHandle));
-                    // Gets the text from the message box
-                    GetWindowText(labelHandle, sb, sb.Capacity);
-                    // Checks if it contains "Unknown instruction", if found, then kill the process
-                    if (sb.ToString().Contains("Unknown instruction"))
-                    {
-                        process.Kill();
-                        Console.WriteLine("The Guest has stopped working!");
-                        Console.WriteLine("Returned: {0}", sb);
-                        MessageBox.Show("The Guest has stopped working.\n" + sb, ProgramName,
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                Console.WriteLine("Process is nolonger running");
-                Enabled = true;
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show("Could not find Dolphin\n" +
-                    "Reseting executable path");
-                Config.DolphinExecutablePath = "";
-                Config.SaveConfig("config.bin");
-            } catch { }
+            if (SaveAndBuildCPK() == 0)
+                LaunchDolphin();
         }
+
+        private void ToolStripMenuItem_LaunchSCWithoutSaving_Click(object sender, EventArgs e)
+        {
+            LaunchDolphin();
+        }
+
 
         #endregion ToolStripMenuItem
 
@@ -848,7 +876,7 @@ namespace SonicColorsSetEditor
                 var lvi = ListView_Param.SelectedItems[0];
                 var param = (SetObjectParam)lvi.Tag;
 
-                new EditParamForm(param).ShowDialog();
+                new EditParamForm(param, GetSetObjectTypeParam(lvi.Text)).ShowDialog();
                 lvi.SubItems[1].Text = param.Data.ToString();
             }
         }
