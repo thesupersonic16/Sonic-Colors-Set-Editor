@@ -635,10 +635,14 @@ namespace SonicColorsSetEditor
                 string raw = null;
                 foreach (byte paramByte in SelectedSetObject.RawParamData)
                 {
-                    raw += paramByte.ToString("x") + " ";
-                }
+					if (paramByte.ToString().Length < 2)
+						raw += "0" + paramByte.ToString("X") + " ";
+					else
+						raw += paramByte.ToString("X") + " ";
+				}
                 MessageBox.Show(raw);
-            }
+				Clipboard.SetText(raw);
+			}
             else
             {
                 MessageBox.Show("Raw data for this object has not been loaded (did you check the template?)");
