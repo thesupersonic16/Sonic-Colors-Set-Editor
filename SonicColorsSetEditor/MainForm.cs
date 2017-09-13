@@ -1,5 +1,6 @@
 ﻿using HedgeLib;
 using HedgeLib.Sets;
+using SonicColorsSetEditor.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,6 +61,16 @@ namespace SonicColorsSetEditor
             InitializeComponent();
         }
 
+        public string ChangeEnglish(string text)
+        {
+            var list = new string[] { "AU", "UK" }.ToList();
+            var conversions = new string[] { "Color", "Colour" };
+            if (UseOtherEnglish)
+                for (int i = 0; i < conversions.Length; i += 2)
+                    text = text.Replace(conversions[i], conversions[i + 1]);
+            return text;
+        }
+
         /// <summary>
         /// Initialises Sonic Colors Set Editor
         /// </summary>
@@ -72,13 +83,10 @@ namespace SonicColorsSetEditor
 
             if (!Directory.Exists("Templates"))
             {
-                var result = MessageBox.Show("No Templates Found\n" +
-                    "Please download the Templates folder from HedgeLib's Github page\n" +
-                    "and place it in the same directory as the executable\n" +
-                    "https://github.com/SKmaric/HedgeLib/tree/master/HedgeEdit/Templates",
+                var result = MessageBox.Show(Resources.NoTemplatesText,
                     ProgramName, MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                 if (result == DialogResult.OK)
-                    Process.Start("https://github.com/SKmaric/HedgeLib/tree/master/HedgeEdit/Templates");
+                    Process.Start(Resources.TemplatesURL);
                 Environment.Exit(-1);
             }
             else
@@ -109,8 +117,7 @@ namespace SonicColorsSetEditor
             }
             else
             {
-                Message("WARNING: Could not find \"CpkMaker.dll\". " +
-                    "This is required to create and extract cpks.");
+                Message(Resources.CPKMakerNotFoundText);
             }
         }
 
@@ -477,8 +484,8 @@ namespace SonicColorsSetEditor
         {
             if (Config.DolphinExecutablePath.Length == 0)
             {
-                Message("Dolphin is not set up yet");
-                MessageBox.Show("Please locate your Dolphin executable.", ProgramName);
+                Message(Resources.DolphinNotSetupText);
+                MessageBox.Show(Resources.LocateDolphinText, ProgramName);
                 var ofd = new OpenFileDialog()
                 {
                     Title = "Locate Dolphin.exe",
@@ -491,16 +498,30 @@ namespace SonicColorsSetEditor
                 Config.SaveConfig("config.bin");
             }
 
+            if (Config.GameRootPath.Length == 0)
+            {
+                MessageBox.Show(ChangeEnglish(Resources.LocateSCExecutableText), ProgramName);
+                var ofd = new OpenFileDialog()
+                {
+                    Title = "Locate boot.dol",
+                    Filter = "Dolphin Executable|*.dol"
+                };
+                if (ofd.ShowDialog() == DialogResult.OK)
+                    Config.GameRootPath = Path.GetDirectoryName(ofd.FileName);
+                else
+                    return;
+                Config.SaveConfig("config.bin");
+            }
+
             try
             {
-                string dvdRootPath = Directory.GetParent(CPKDirectory).FullName;
+                string dvdRootPath = Config.GameRootPath;
                 string dolFilePath = Helpers.CombinePaths(dvdRootPath, "boot.dol");
                 string apploaderPath = Helpers.CombinePaths(dvdRootPath, "apploader.img");
 
                 if (!File.Exists(dolFilePath))
                 {
-                    MessageBox.Show("Could not find boot.dol\n" +
-                    "Make sure boot.dol is in the parent directory of \"sonic2010_0\"");
+                    MessageBox.Show(Resources.DolNotFoundText);
                     return;
                 }
 
@@ -542,10 +563,10 @@ namespace SonicColorsSetEditor
                     if (sb.ToString().Contains("Unknown instruction"))
                     {
                         process.Kill();
-                        Console.WriteLine("The Guest has stopped working!");
+                        Console.WriteLine(Resources.Unknown_InstructionFoundText);
                         Console.WriteLine("Returned: {0}", sb);
-                        MessageBox.Show("The Guest has stopped working.\n" + sb, ProgramName,
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"{Resources.Unknown_InstructionFoundText}\n{sb}",
+                            ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 Console.WriteLine("Process is nolonger running");
@@ -554,8 +575,7 @@ namespace SonicColorsSetEditor
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show("Could not find Dolphin\n" +
-                    "Reseting executable path");
+                MessageBox.Show(Resources.DolNotFoundText);
                 Config.DolphinExecutablePath = "";
                 Config.SaveConfig("config.bin");
             }
@@ -725,13 +745,15 @@ namespace SonicColorsSetEditor
         {
             var cpkMaker = new CPKMaker();
             cpkMaker.BuildCPK(CPKDirectory);
-            MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void ToolStripMenuItem_SaveAndBuildCPK_Click(object sender, EventArgs e)
         {
             if (SaveAndBuildCPK() == 0)
-                MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
         }
 
         private void ToolStripMenuItem_ExtractCPK_Click(object sender, EventArgs e)
@@ -751,8 +773,7 @@ namespace SonicColorsSetEditor
                     if (Directory.GetFiles(Helpers.CombinePaths(directory, "set")).Length > 0)
                     {
                         var dialogResult =
-                            MessageBox.Show("One or more set files has been found\n" +
-                            "Would you like to load one of the set files?", ProgramName,
+                            MessageBox.Show(Resources.MultipleSetDataFoundText, ProgramName,
                             MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (dialogResult == DialogResult.Yes)
                         {

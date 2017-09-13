@@ -27,13 +27,28 @@ namespace SonicColorsSetEditor
             Form = form;
             FilePath = filePath;
 
-            foreach (string fileName in Directory.GetFiles(Helpers.CombinePaths(filePath, "set")))
+            foreach (string fileName in 
+                Directory.GetFiles(Helpers.CombinePaths(FindSonic_2010_0(filePath), "set")))
             {
                 var lvi = new ListViewItem(Path.GetFileNameWithoutExtension(fileName));
                 lvi.Tag = Path.GetFileNameWithoutExtension(fileName);
                 listView1.Items.Add(lvi);
             }
             Console.WriteLine("Found {0} Files in {1}.", listView1.Items.Count, filePath);
+        }
+
+        public string FindSonic_2010_0(string path)
+        {
+            // In sonic2010_0
+            if (path.EndsWith("sonic2010_0"))
+                return path;
+            // In sonic2010_0's SubFolders
+            if (Directory.GetParent(path).Name == "sonic2010_0")
+                return Directory.GetParent(path).FullName;
+            // In Game Root
+            if (Directory.Exists(Path.Combine(path, "sonic2010_0")))
+                return Path.Combine(path, "sonic2010_0");
+            return path;
         }
 
         private void Button_Load_Click(object sender, EventArgs e)
