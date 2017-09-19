@@ -22,6 +22,7 @@ namespace SonicColorsSetEditor
         {
             InitializeComponent();
             Cpkmaker = cpkmaker;
+            Theme.ApplyDarkThemeToAll(this);
         }
 
         public void UpdateLabel(string text)

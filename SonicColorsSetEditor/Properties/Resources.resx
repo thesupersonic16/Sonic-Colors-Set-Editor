@@ -131,6 +131,10 @@ Make sure boot.dol is in the parent directory of "sonic2010_0"</value>
   <data name="DolphinNotSetupText" xml:space="preserve">
     <value>Dolphin is not set up yet!</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\res\icon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="LocateDolphinText" xml:space="preserve">
     <value>Please locate your Dolphin executable.</value>
   </data>

@@ -13,7 +13,7 @@ namespace SonicColorsSetEditor
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        public static void Main(String[] args)
+        public static void Main(string[] args)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -34,6 +34,9 @@ namespace SonicColorsSetEditor
                         case "/o":
                             if (args.Length > argIndex)
                                 form.OpenSetData(args[argIndex++]);
+                            break;
+                        case "/debug":
+                            form.debugToolStripMenuItem.Visible = true;
                             break;
                         case "/so":
                             if (form.SetData == null)
@@ -74,6 +77,10 @@ namespace SonicColorsSetEditor
 
                     "/SO {ID} " + Environment.NewLine +
                     "\t (Selects the SetObject, /O is required for this to work)" +
+                    Environment.NewLine +
+
+                    "/C " + Environment.NewLine +
+                    "\t (Opens a Console Window)" +
                     Environment.NewLine +
 
                     "/?" + Environment.NewLine +

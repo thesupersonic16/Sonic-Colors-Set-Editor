@@ -1,4 +1,6 @@
-﻿namespace SonicColorsSetEditor
+﻿using SonicColorsSetEditor.Properties;
+
+namespace SonicColorsSetEditor
 {
     partial class NewObjectForm
     {
@@ -87,7 +89,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = ((System.Drawing.Icon)(Resources.icon));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NewObjectForm";
