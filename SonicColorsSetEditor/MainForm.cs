@@ -40,6 +40,12 @@ namespace SonicColorsSetEditor
         public string CPKDirectory = "";
         public string LoadedFilePath = "";
 
+        //Generations conversion
+        public ColorstoGensSetData ColorstoGensSetData = null;
+        public Dictionary<string, string> ColorstoGensRenamers = null;
+        public Dictionary<string, string> ColorstoGensParamMods = null;
+        public Dictionary<string, string> ColorstoGensRotateMods = null;
+
         // Constructors
         public MainForm()
         {
@@ -93,6 +99,18 @@ namespace SonicColorsSetEditor
                 foreach (string objName in TemplatesColors.Keys)
                     ComboBox_ObjectType.Items.Add(objName);
                 Console.WriteLine("Loaded {0} Templates.", TemplatesColors.Count);
+                
+                // Load the Modifiers file
+                if (File.Exists("Templates/Colors/Modifiers-ColorsToGenerations.xml"))
+                {
+                    var doc = XDocument.Load("Templates/Colors/Modifiers-ColorsToGenerations.xml");
+                    var renameNodes = doc.Root.Element("Rename").DescendantNodes().OfType<XElement>();
+                    var paramNodes = doc.Root.Element("Parameters").DescendantNodes().OfType<XElement>();
+                    var rotateNodes = doc.Root.Element("Rotation").DescendantNodes().OfType<XElement>();
+                    ColorstoGensRenamers = renameNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                    ColorstoGensParamMods = paramNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                    ColorstoGensRotateMods = rotateNodes.ToDictionary(n => n.Name.ToString(), n => n.Value);
+                }
             }
 
             if (File.Exists("CpkMaker.dll"))
@@ -146,6 +164,9 @@ namespace SonicColorsSetEditor
 
                     if (lvi.SubItems[1].Text.Length > longestNameLength)
                         longestNameLength = lvi.SubItems[1].Text.Length;
+
+                    if (setObject.IsTemplateExists == false)
+                        lvi.ForeColor = Color.Red;
 
                     ListView_Objects.Items.Add(lvi);
                 }
@@ -328,7 +349,7 @@ namespace SonicColorsSetEditor
                 var sfd = new SaveFileDialog()
                 {
                     Title = "Save SetData",
-                    Filter = $"{GameName} SetData|*.orc|XML|*.xml"
+                    Filter = $"{GameName} SetData|*.orc|Sonic Generations SetData|*.set.xml|XML|*.xml"
                 };
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -342,6 +363,17 @@ namespace SonicColorsSetEditor
                 if (LoadedFilePath.ToLower().EndsWith(".orc"))
                 {
                     SetData.Save(LoadedFilePath, true);
+                }
+                else if (LoadedFilePath.ToLower().EndsWith(".set.xml"))
+                {
+                    ColorstoGensSetData = new ColorstoGensSetData();
+                    //ColorstoGensSetData.Header = SetData.Header;
+                    ColorstoGensSetData.Name = SetData.Name;
+                    ColorstoGensSetData.Objects = SetData.Objects;
+                    ColorstoGensSetData.GensExportXML(LoadedFilePath, TemplatesColors, ColorstoGensRenamers, ColorstoGensParamMods, ColorstoGensRotateMods);
+
+                    MessageBox.Show("This feature is currently in development. In order to prevent bugs caused by the program remaining open after an export, the program will now close, but you may open it again immediately without consequence. Thank you for your understanding.");
+                    Application.Exit();
                 }
                 else if (LoadedFilePath.ToLower().EndsWith(".xml"))
                 {
@@ -625,6 +657,27 @@ namespace SonicColorsSetEditor
                 UpdateObjects();
             }
 
+        }
+
+        private void rawParameterDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedSetObject.RawParamData != null)
+            {
+                string raw = null;
+                foreach (byte paramByte in SelectedSetObject.RawParamData)
+                {
+					if (paramByte.ToString().Length < 2)
+						raw += "0" + paramByte.ToString("X") + " ";
+					else
+						raw += paramByte.ToString("X") + " ";
+				}
+                MessageBox.Show(raw);
+				Clipboard.SetText(raw);
+			}
+            else
+            {
+                MessageBox.Show("Raw data for this object has not been loaded (did you check the template?)");
+            }
         }
 
         private void ReloadSetData_ToolStripMenuItem_Click(object sender, EventArgs e)
