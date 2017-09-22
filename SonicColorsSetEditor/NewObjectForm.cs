@@ -18,6 +18,7 @@ namespace SonicColorsSetEditor
         public NewObjectForm()
         {
             InitializeComponent();
+            Theme.ApplyDarkThemeToAll(this);
         }
 
         public NewObjectForm(MainForm form) : this()

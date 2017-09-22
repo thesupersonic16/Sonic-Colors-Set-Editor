@@ -23,10 +23,8 @@ namespace SonicColorsSetEditor
     public partial class MainForm : Form
     {
 
-        // Paths
+        // Variables/Constants
         public static string TemplatesPath = Path.Combine(Application.StartupPath, "Templates");
-
-        // Names
         public static string SonicColorsShortName = "Colors";
         public static string ProgramName = "Sonic Colors Set Editor";
         public static string GameName = "Sonic Colors";
@@ -34,10 +32,11 @@ namespace SonicColorsSetEditor
         public static bool HasCPKMaker = false;
         public static bool UseOtherEnglish = false; // lol
         public static bool HasBeenInit = false;
-        
+
         public Dictionary<string, SetObjectType> TemplatesColors = null;
         public SetData SetData = null;
         public SetObject SelectedSetObject = null;
+
         public string CPKDirectory = "";
         public string LoadedFilePath = "";
 
@@ -47,23 +46,27 @@ namespace SonicColorsSetEditor
         public Dictionary<string, string> ColorstoGensParamMods = null;
         public Dictionary<string, string> ColorstoGensRotateMods = null;
 
+        // Constructors
         public MainForm()
         {
+            InitializeComponent();
+            
             // Change English. lol
             var list = new string[] { "AU", "UK" }.ToList();
-            if (list.Contains(RegionInfo.CurrentRegion.TwoLetterISORegionName))
-            {
-                ProgramName = "Sonic Colours Set Editor";
-                GameName = "Sonic Colours";
-                UseOtherEnglish = true;
-            }
+            UseOtherEnglish = list.Contains(RegionInfo.CurrentRegion.TwoLetterISORegionName);
+            
+            ProgramName = ChangeEnglish(ProgramName);
+            GameName    = ChangeEnglish(GameName);
 
-            InitializeComponent();
+            // Check if compiled in Debug
+            #if DEBUG
+            debugToolStripMenuItem.Visible = true;
+            #endif
         }
 
+        // Methods
         public string ChangeEnglish(string text)
         {
-            var list = new string[] { "AU", "UK" }.ToList();
             var conversions = new string[] { "Color", "Colour" };
             if (UseOtherEnglish)
                 for (int i = 0; i < conversions.Length; i += 2)
@@ -451,14 +454,11 @@ namespace SonicColorsSetEditor
         }
 
         /// <summary>
-        /// Saves the SetData then Builds the CPK (if CPKMaker.dll exists)
+        /// Builds the CPK (if CPKMaker.dll exists)
         /// </summary>
         /// <returns>INT: The Status</returns>
-        public int SaveAndBuildCPK()
+        public int BuildCPK()
         {
-            // Saves the SetData
-            SaveSetData();
-            Console.WriteLine("Saved.");
             // Checks if CPKMaker is enabled
             if (HasCPKMaker)
             {
@@ -529,7 +529,7 @@ namespace SonicColorsSetEditor
                 string dolphinConfigPath = Helpers.CombinePaths(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "Dolphin Emulator", "Config", "Dolphin.ini");
-                string[] dolphinConfig = File.ReadAllLines(dolphinConfigPath);
+                var dolphinConfig = File.ReadAllLines(dolphinConfigPath);
 
                 for (int i = 0; i < dolphinConfig.Length; ++i)
                 {
@@ -551,11 +551,11 @@ namespace SonicColorsSetEditor
                     Enabled = false;
                     Thread.Sleep(1000);
 
-                    IntPtr messageBoxHandle = FindWindow(null, "Warning");
+                    var messageBoxHandle = FindWindow(null, "Warning");
                     if (messageBoxHandle == IntPtr.Zero)
                         continue;
 
-                    IntPtr labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
+                    var labelHandle = GetDlgItem(messageBoxHandle, 0xFFFF);
                     var sb = new StringBuilder(GetWindowTextLength(labelHandle));
                     // Gets the text from the message box
                     GetWindowText(labelHandle, sb, sb.Capacity);
@@ -589,7 +589,18 @@ namespace SonicColorsSetEditor
             return setObjectParams.Find(t => name == t.Name);
         }
 
+        // GUI Events
         #region ToolStripMenuItem
+
+        private void EnableDarkTheme_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Theme.ApplyDarkThemeToAll(this);
+        }
+
+        private void StageNamesEditor_ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new StageNameEditorForm().ShowDialog();
+        }
 
         private void New_SOBJ_ToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -743,15 +754,14 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_BuildCPK_Click(object sender, EventArgs e)
         {
-            var cpkMaker = new CPKMaker();
-            cpkMaker.BuildCPK(CPKDirectory);
+            BuildCPK();
             MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
 
         private void ToolStripMenuItem_SaveAndBuildCPK_Click(object sender, EventArgs e)
         {
-            if (SaveAndBuildCPK() == 0)
+            if (BuildCPK() == 0)
                 MessageBox.Show("Done.", ProgramName, MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
         }
@@ -791,7 +801,8 @@ namespace SonicColorsSetEditor
 
         private void ToolStripMenuItem_SaveAndLaunchSC_Click(object sender, EventArgs e)
         {
-            if (SaveAndBuildCPK() == 0)
+            SaveSetData();
+            if (BuildCPK() == 0)
                 LaunchDolphin();
         }
 
@@ -809,7 +820,7 @@ namespace SonicColorsSetEditor
         {
             if (ListView_Objects.SelectedItems.Count != 0)
             {
-                var transformIndex = (int)NumericUpDown_TransIndex.Value;
+                int transformIndex = (int)NumericUpDown_TransIndex.Value;
                 var lvi = ListView_Objects.SelectedItems[0];
                 var setObject = (SetObject)lvi.Tag;
                 var objectTransform = transformIndex == 0 ? setObject.Transform :
@@ -976,16 +987,15 @@ namespace SonicColorsSetEditor
 
         // Pinvokes
         [DllImport("user32.dll")]
-        private static extern IntPtr GetDlgItem(IntPtr dialogHandle, int controlID);
+        public static extern IntPtr GetDlgItem(IntPtr dialogHandle, int controlID);
 
         [DllImport("user32.dll", CharSet=CharSet.Unicode)]
-        private static extern int GetWindowText(IntPtr Handle, StringBuilder text, int maxCount);
+        public static extern int GetWindowText(IntPtr Handle, StringBuilder text, int maxCount);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr FindWindow(string className, string WindowName);
+        public static extern IntPtr FindWindow(string className, string WindowName);
 
         [DllImport("user32.dll")]
-        private static extern int GetWindowTextLength(IntPtr Handle);
-
+        public static extern int GetWindowTextLength(IntPtr Handle);
     }
 }

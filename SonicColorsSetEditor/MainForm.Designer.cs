@@ -1,4 +1,6 @@
-﻿namespace SonicColorsSetEditor
+﻿using SonicColorsSetEditor.Properties;
+
+namespace SonicColorsSetEditor
 {
     partial class MainForm
     {
@@ -29,7 +31,6 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.Label_Objects = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,9 +45,13 @@
             this.ToolStripMenuItem_SaveAndBuildCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_ExtractCPK = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_SaveAndLaunchSC = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_LaunchSCWithoutSaving = new System.Windows.Forms.ToolStripMenuItem();
             this.ReloadTemplates_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ReloadSetData_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ReassignAllObjects_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.StageNamesEditor_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EnableDarkTheme_ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ListView_Objects = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -129,7 +134,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.toolsToolStripMenuItem});
+            this.toolsToolStripMenuItem,
+            this.debugToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(802, 24);
@@ -252,6 +258,15 @@
             this.ToolStripMenuItem_SaveAndLaunchSC.Text = "Save and Launch SC";
             this.ToolStripMenuItem_SaveAndLaunchSC.Click += new System.EventHandler(this.ToolStripMenuItem_SaveAndLaunchSC_Click);
             // 
+            // ToolStripMenuItem_LaunchSCWithoutSaving
+            // 
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Enabled = false;
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Name = "ToolStripMenuItem_LaunchSCWithoutSaving";
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Size = new System.Drawing.Size(273, 22);
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Text = "Launch SC Without Saving";
+            this.ToolStripMenuItem_LaunchSCWithoutSaving.Click += new System.EventHandler(this.ToolStripMenuItem_LaunchSCWithoutSaving_Click);
+            // 
             // ReloadTemplates_ToolStripMenuItem
             // 
             this.ReloadTemplates_ToolStripMenuItem.Name = "ReloadTemplates_ToolStripMenuItem";
@@ -280,6 +295,30 @@
             this.ReassignAllObjects_ToolStripMenuItem.Text = "Reassign All Objects IDs";
             this.ReassignAllObjects_ToolStripMenuItem.Click += new System.EventHandler(this.ReassignAllObjects_ToolStripMenuItem_Click);
             // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StageNamesEditor_ToolStripMenuItem,
+            this.EnableDarkTheme_ToolStripMenuItem});
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            this.debugToolStripMenuItem.Visible = false;
+            // 
+            // StageNamesEditor_ToolStripMenuItem
+            // 
+            this.StageNamesEditor_ToolStripMenuItem.Name = "StageNamesEditor_ToolStripMenuItem";
+            this.StageNamesEditor_ToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.StageNamesEditor_ToolStripMenuItem.Text = "StageNames Editor";
+            this.StageNamesEditor_ToolStripMenuItem.Click += new System.EventHandler(this.StageNamesEditor_ToolStripMenuItem_Click);
+            // 
+            // EnableDarkTheme_ToolStripMenuItem
+            // 
+            this.EnableDarkTheme_ToolStripMenuItem.Name = "EnableDarkTheme_ToolStripMenuItem";
+            this.EnableDarkTheme_ToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
+            this.EnableDarkTheme_ToolStripMenuItem.Text = "Enable Dark Theme";
+            this.EnableDarkTheme_ToolStripMenuItem.Click += new System.EventHandler(this.EnableDarkTheme_ToolStripMenuItem_Click);
+            // 
             // ListView_Objects
             // 
             this.ListView_Objects.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -307,7 +346,7 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Object Name";
-            this.columnHeader1.Width = 127;
+            this.columnHeader1.Width = 160;
             // 
             // SOBJ_ContextMenuStrip
             // 
@@ -431,7 +470,7 @@
             // columnHeader6
             // 
             this.columnHeader6.Text = "Value";
-            this.columnHeader6.Width = 77;
+            this.columnHeader6.Width = 85;
             // 
             // label3
             // 
@@ -521,7 +560,7 @@
             // columnHeader4
             // 
             this.columnHeader4.Text = "Value";
-            this.columnHeader4.Width = 140;
+            this.columnHeader4.Width = 152;
             // 
             // GroupBox_Transform
             // 
@@ -824,6 +863,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 433);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(802, 22);
+            this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 6;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -863,7 +903,7 @@
             this.Controls.Add(this.Label_Objects);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Icon = global::SonicColorsSetEditor.Properties.Resources.icon;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "MainForm";
@@ -966,6 +1006,9 @@
         private System.Windows.Forms.ToolStripMenuItem ReassignAllObjects_ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rawParameterDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_LaunchSCWithoutSaving;
+        private System.Windows.Forms.ToolStripMenuItem StageNamesEditor_ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem EnableDarkTheme_ToolStripMenuItem;
+        public System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
     }
 }
 

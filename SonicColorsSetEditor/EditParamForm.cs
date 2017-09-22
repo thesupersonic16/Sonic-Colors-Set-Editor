@@ -21,6 +21,7 @@ namespace SonicColorsSetEditor
         public EditParamForm()
         {
             InitializeComponent();
+            Theme.ApplyDarkThemeToAll(this);
         }
 
         public EditParamForm(SetObjectParam param, SetObjectTypeParam paramType) : this()
@@ -38,6 +39,7 @@ namespace SonicColorsSetEditor
                 {
                     ComboBox_Enum.Items.Add(tempEnum);
                 }
+                ComboBox_Enum.SelectedItem = ComboBox_Enum.Items[0];
             }
             UpdateTypes();
             Read();
@@ -208,8 +210,11 @@ namespace SonicColorsSetEditor
 
             if (CheckBox_UseEnum.Checked)
             {
-                Param.Data = byte.Parse(((SetObjectTypeParamEnum)ComboBox_Enum.SelectedItem).Value as string);
-                return;
+                if (ComboBox_Enum.SelectedItem != null)
+                {
+                    Param.Data = Helpers.ChangeType(((SetObjectTypeParamEnum)ComboBox_Enum.SelectedItem).Value, type);
+                    return;
+                }
             }
 
             if (type == typeof(string))

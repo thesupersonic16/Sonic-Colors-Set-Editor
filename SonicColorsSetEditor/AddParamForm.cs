@@ -20,6 +20,7 @@ namespace SonicColorsSetEditor
         public AddParamForm()
         {
             InitializeComponent();
+            Theme.ApplyDarkThemeToAll(this);
         }
 
         public AddParamForm(SetObject setObject) : this()
